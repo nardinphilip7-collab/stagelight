@@ -1,0 +1,62 @@
+{% extends 'qrcode_tracker/base.html' %}
+{% block content %}
+<!-- qr_attendance/templates/qr_attendance/upload.html -->
+
+<div class="container">
+    <h2>Upload Excel File</h2>
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="upload-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="excel_file">Select Excel File:</label>
+            <input type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+        <a href="?download_template=1" class="btn btn-secondary" style="margin-left: 1rem;">Download Template</a>
+    </form>
+    <p class="info">Ensure your Excel file matches the configured columns: {{ config.excel_columns|join:", " }}.</p>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('excel_file');
+    const form = document.getElementById('upload-form');
+
+    // Highlight drop zone on drag over
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    // Handle file drop
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        fileInput.files = e.dataTransfer.files;
+        if (fileInput.files.length) {
+            form.submit(); // Auto-submit on drop
+        }
+    });
+
+    // Trigger file input click when clicking the drop zone
+    dropZone.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // Auto-submit on file selection via input
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length) {
+            form.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!-- qr_attendance/templates/qr_attendance/login.html -->
+{% extends 'qrcode_tracker/base.html' %}
+{% block content %}
+<div class="container">
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+{% endblock %}
