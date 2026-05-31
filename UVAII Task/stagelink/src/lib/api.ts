@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 const _getCache = new Map<string, { data: unknown; ts: number }>();
 const CACHE_TTL = 30_000;
@@ -120,16 +120,16 @@ async function requestForm<T>(path: string, formData: FormData, retry = true): P
   return unwrapPaginated(await res.json()) as T;
 }
 
-async function cachedGet<T>(path: string): Promise<T> {
+async function cachedGet<T>(path: string, noCache = false): Promise<T> {
   const hit = _getCache.get(path);
-  if (hit && Date.now() - hit.ts < CACHE_TTL) return hit.data as T;
+  if (!noCache && hit && Date.now() - hit.ts < CACHE_TTL) return hit.data as T;
   const data = await request<T>(path);
   _getCache.set(path, { data, ts: Date.now() });
   return data;
 }
 
 export const apiClient = {
-  get: <T>(path: string) => cachedGet<T>(path),
+  get: <T>(path: string, noCache = false) => cachedGet<T>(path, noCache),
   post: <T>(path: string, body: unknown) =>
     request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
   postForm: <T>(path: string, formData: FormData) => requestForm<T>(path, formData),

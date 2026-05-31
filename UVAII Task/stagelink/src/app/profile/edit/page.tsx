@@ -640,7 +640,7 @@ function ProfileEditContent() {
         } catch { /* non-blocking: showreel is optional */ }
       }
       // Re-fetch to confirm the gate flag flipped; only leave when truly complete.
-      const me = await apiClient.get<{ onboarding_complete?: boolean }>("/auth/me/");
+      const me = await apiClient.get<{ onboarding_complete?: boolean }>("/auth/me/", true);
       if (me?.onboarding_complete) {
         router.replace("/explore");
       } else {

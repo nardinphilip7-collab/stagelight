@@ -259,6 +259,7 @@ class Connection(models.Model):
 
     class Meta:
         unique_together = ('from_user', 'to_user')
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.from_user.email} → {self.to_user.email} ({self.status})"
