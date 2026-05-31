@@ -1,0 +1,705 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* ArtStage Custom Variables - Dark Mode Colors */
+  --as-bg: #131314;
+  --as-surface: #1c1b1c;
+  --as-border: rgba(255, 255, 255, 0.08);
+  --as-text: #e5e2e3;
+  --as-text-secondary: #d0c6ab;
+  --as-text-muted: #999077;
+  --as-accent: #ffd700;
+  --as-accent-hover: #e9c400;
+  --as-verified: #00dbe8;
+  --as-live: #e10111;
+  --as-font-ui: var(--font-sans), system-ui, sans-serif;
+  --as-font-display: var(--font-newsreader), Georgia, serif;
+  --as-radius-card: 8px;
+  --as-radius-input: 6px;
+  --as-radius-pill: 9999px;
+
+  /* MD3 Cinematic StageLight Tokens for Profiles */
+  --color-tertiary: #defcff;
+  --color-secondary-fixed: #ffdad5;
+  --color-error: #ffb4ab;
+  --color-surface: #131314;
+  --color-surface-container: #201f20;
+  --color-on-primary-fixed: #221b00;
+  --color-on-primary-fixed-variant: #544600;
+  --color-on-primary: #3a3000;
+  --color-tertiary-fixed: #79f5ff;
+  --color-outline-variant: #4d4732;
+  --color-on-primary-container: #705e00;
+  --color-on-secondary-container: #fff1ef;
+  --color-primary-fixed-dim: #e9c400;
+  --color-on-tertiary-fixed: #002022;
+  --color-on-surface: #e5e2e3;
+  --color-surface-container-high: #2a2a2b;
+  --color-on-tertiary-fixed-variant: #004f54;
+  --color-on-error: #690005;
+  --color-inverse-primary: #705d00;
+  --color-outline: #999077;
+  --color-surface-container-highest: #353436;
+  --color-surface-bright: #3a393a;
+  --color-surface-variant: #353436;
+  --color-on-secondary: #690003;
+  --color-on-tertiary-container: #006a70;
+  --color-tertiary-container: #00f1ff;
+  --color-error-container: #93000a;
+  --color-primary-container: #ffd700;
+  --color-on-background: #e5e2e3;
+  --color-surface-dim: #131314;
+  --color-secondary-container: #e10111;
+  --color-inverse-on-surface: #313031;
+  --color-tertiary-fixed-dim: #00dbe8;
+  --color-surface-container-low: #1c1b1c;
+  --color-secondary-fixed-dim: #ffb4aa;
+  --color-on-secondary-fixed-variant: #930007;
+  --color-on-error-container: #ffdad6;
+  --color-on-surface-variant: #d0c6ab;
+  --color-primary-fixed: #ffe16d;
+  --color-surface-container-lowest: #0e0e0f;
+  --color-on-tertiary: #00363a;
+  --color-on-secondary-fixed: #410001;
+  --color-surface-tint: #e9c400;
+  --color-inverse-surface: #e5e2e3;
+
+  --spacing-margin-mobile: 20px;
+  --spacing-container-max: 1440px;
+  --spacing-base: 8px;
+  --spacing-margin-desktop: 64px;
+  --spacing-gutter: 24px;
+
+  --font-display-lg-mobile: Syne, sans-serif;
+  --font-headline-xl: Syne, sans-serif;
+  --font-label-md: Outfit, sans-serif;
+  --font-headline-lg: Syne, sans-serif;
+  --font-body-md: Outfit, sans-serif;
+  --font-display-lg: Syne, sans-serif;
+  --font-body-lg: Outfit, sans-serif;
+
+  --text-display-lg-mobile: 40px;
+  --text-display-lg-mobile--line-height: 1.2;
+  --text-display-lg-mobile--font-weight: 800;
+
+  --text-headline-xl: 48px;
+  --text-headline-xl--line-height: 1.2;
+  --text-headline-xl--font-weight: 700;
+
+  --text-label-md: 14px;
+  --text-label-md--line-height: 1.2;
+  --text-label-md--letter-spacing: 0.05em;
+  --text-label-md--font-weight: 600;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 1.3;
+  --text-headline-lg--font-weight: 700;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.6;
+  --text-body-md--font-weight: 400;
+
+  --text-display-lg: 64px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 800;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--font-weight: 400;
+}
+
+@layer base {
+  :root {
+    /* Stage Light — dark palette for all pages */
+
+    /* Background: matching --as-bg #131314 */
+    --background: 270 2% 8%;
+
+    /* Foreground: matching --as-text #e5e2e3 */
+    --foreground: 330 3% 89%;
+
+    /* Card: surface #1c1b1c */
+    --card: 300 1% 11%;
+    --card-foreground: 330 3% 89%;
+
+    /* Popover */
+    --popover: 300 1% 11%;
+    --popover-foreground: 330 3% 89%;
+
+    /* Primary: gold #ffd700 */
+    --primary: 51 100% 50%;
+    --primary-foreground: 48 100% 13%;
+
+    /* Secondary */
+    --secondary: 270 2% 14%;
+    --secondary-foreground: 330 3% 89%;
+
+    /* Muted */
+    --muted: 270 2% 14%;
+    --muted-foreground: 36 14% 53%;
+
+    /* Accent: gold #ffd700 */
+    --accent: 51 100% 50%;
+    --accent-foreground: 48 100% 13%;
+
+    /* Destructive */
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders */
+    --border: 270 2% 18%;
+    --input: 270 2% 14%;
+    --ring: 51 100% 50%;
+
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+    
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight text-foreground;
+  }
+}
+
+@layer utilities {
+
+  /* Glassmorphism card for spotlight effect */
+  .glass-card {
+    background: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Gold spotlight glow on interactive elements */
+  .spotlight-hover {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .spotlight-hover:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.4), 0 4px 20px hsl(var(--primary) / 0.12);
+    border-color: hsl(var(--primary) / 0.4);
+  }
+
+  /* Gradient text for theatrical headings */
+  .text-stage-gradient {
+    background: linear-gradient(135deg, hsl(355 100% 43%), hsl(355 100% 25%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Stage curtain divider */
+  .stage-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, hsl(var(--border)), transparent);
+  }
+
+  @keyframes stage-spotlight {
+    0% {
+      transform: translate(-50%, -10%) scale(1);
+    }
+
+    33% {
+      transform: translate(-30%, 10%) scale(1.2);
+    }
+
+    66% {
+      transform: translate(-70%, 5%) scale(0.8);
+    }
+
+    100% {
+      transform: translate(-50%, -10%) scale(1);
+    }
+  }
+
+  .animate-stage-spotlight {
+    animation: stage-spotlight 15s ease-in-out infinite alternate;
+  }
+
+  .animate-stage-spotlight-delayed {
+    animation: stage-spotlight 12s ease-in-out infinite alternate-reverse;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ArtStage Design System — scoped to .artstage wrapper
+   Uses CSS custom properties defined above
+   ═══════════════════════════════════════════════════════════════════ */
+
+.artstage {
+  background-color: var(--as-bg);
+  color: var(--as-text);
+  font-family: var(--as-font-ui);
+  min-height: 100vh;
+}
+
+/* Typography */
+.artstage .as-display {
+  font-family: var(--as-font-display);
+}
+
+.artstage .as-ui {
+  font-family: var(--as-font-ui);
+}
+
+/* Layout & Surfaces */
+.artstage .as-surface {
+  background-color: var(--as-surface);
+  border: 1px solid var(--as-border);
+  border-radius: var(--as-radius-card);
+}
+
+.artstage .as-border {
+  border-color: var(--as-border);
+}
+
+/* Text Colors */
+.artstage .as-text {
+  color: var(--as-text);
+}
+
+.artstage .as-text-secondary {
+  color: var(--as-text-secondary);
+}
+
+.artstage .as-text-muted {
+  color: var(--as-text-muted);
+}
+
+.artstage .as-accent {
+  color: var(--as-accent);
+}
+
+.artstage .as-verified-color {
+  color: var(--as-verified);
+}
+
+.artstage .as-live-color {
+  color: var(--as-live);
+}
+
+/* Background Colors */
+.artstage .as-bg-accent {
+  background-color: var(--as-accent);
+  color: #fff;
+}
+
+.artstage .as-bg-verified {
+  background-color: var(--as-verified);
+  color: #fff;
+}
+
+/* Availability Calendar States */
+.artstage .as-avail-available {
+  background-color: #FFF3EF;
+  border-left: 3px solid var(--as-accent);
+}
+
+.artstage .as-avail-tentative {
+  background-image: repeating-linear-gradient(45deg, #FAF9F6 0px, #FAF9F6 4px, #F0EDE6 4px, #F0EDE6 8px);
+  border-left: 3px solid #C8A882;
+}
+
+.artstage .as-avail-unavailable {
+  background-color: #F2F1EF;
+  border-left: 3px solid #C0BDB8;
+}
+
+.artstage .as-avail-booked {
+  background-color: #E8E5DE;
+  border-left: 3px solid #9A9A9A;
+}
+
+/* Buttons */
+.artstage .as-btn-primary {
+  background-color: var(--as-accent);
+  color: #fff;
+  border-radius: var(--as-radius-pill);
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.artstage .as-btn-primary:hover {
+  background-color: var(--as-accent-hover);
+}
+
+.artstage .as-btn-primary:focus-visible {
+  outline: 2px solid var(--as-accent);
+  outline-offset: 2px;
+}
+
+.artstage .as-btn-outline {
+  background-color: transparent;
+  color: var(--as-text);
+  border-radius: var(--as-radius-pill);
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--as-border);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.artstage .as-btn-outline:hover {
+  border-color: var(--as-text-secondary);
+  background-color: #F5F3EF;
+}
+
+.artstage .as-btn-outline:focus-visible {
+  outline: 2px solid var(--as-text);
+  outline-offset: 2px;
+}
+
+/* Tab Underline */
+.artstage .as-tab-active {
+  border-bottom: 2px solid var(--as-accent);
+  color: var(--as-accent);
+  font-weight: 500;
+}
+
+/* Pill Badge */
+.artstage .as-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--as-radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--as-border);
+  background-color: var(--as-surface);
+  color: var(--as-text-secondary);
+}
+
+/* Verification Accent Bars */
+.artstage .as-verified-bar {
+  border-left: 3px solid var(--as-verified);
+}
+
+.artstage .as-pending-bar {
+  border-left: 3px solid #C8A882;
+}
+
+.artstage .as-self-asserted-bar {
+  border-left: 3px solid var(--as-border);
+}
+
+/* Focus Ring */
+.artstage *:focus-visible {
+  outline: 2px solid var(--as-accent);
+  outline-offset: 2px;
+}
+
+/* Sticky Tabs */
+.artstage .as-sticky-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--as-bg);
+  border-bottom: 1px solid var(--as-border);
+}
+
+/* Reel Card Hover */
+.artstage .as-reel-card:hover .as-reel-overlay {
+  opacity: 1;
+}
+
+.artstage .as-reel-overlay {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: linear-gradient(to top, rgba(26, 26, 26, 0.7) 0%, transparent 50%);
+}
+
+/* Live Pill Pulse Animation */
+@keyframes as-live-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.artstage .as-live-pulse {
+  animation: as-live-pulse 1.8s ease-in-out infinite;
+}
+
+/* Skeleton Shimmer */
+@keyframes as-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.artstage .as-skeleton {
+  background: linear-gradient(90deg, #1c1b1c 25%, #2a2a2b 50%, #1c1b1c 75%);
+  background-size: 200% 100%;
+  animation: as-shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Dark Theme Override — scoped to .artstage-dark
+   Reference: StageLight dark palette
+   ═══════════════════════════════════════════════════════════════════ */
+
+.artstage-dark {
+  --as-bg: #131314;
+  --as-surface: #1c1b1c;
+  --as-border: rgba(255, 255, 255, 0.08);
+  --as-text: #e5e2e3;
+  --as-text-secondary: #d0c6ab;
+  --as-text-muted: #999077;
+  --as-accent: #ffd700;
+  --as-accent-hover: #e9c400;
+  --as-verified: #00dbe8;
+  --as-live: #e10111;
+}
+
+.artstage-dark .as-surface {
+  background: rgba(22, 22, 24, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.artstage-dark .as-surface:hover {
+  box-shadow:
+    0 0 20px rgba(233, 196, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: rgba(233, 196, 0, 0.25);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.artstage-dark .as-btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.artstage-dark .as-btn-primary {
+  background-color: var(--as-accent);
+  color: #221b00;
+}
+
+.artstage-dark .as-btn-primary:hover {
+  background-color: var(--as-accent-hover);
+}
+
+.artstage-dark .as-pill {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--as-text-muted);
+}
+
+.artstage-dark .as-skeleton {
+  background: linear-gradient(90deg, #1c1b1c 25%, #2a2a2b 50%, #1c1b1c 75%);
+  background-size: 200% 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Hirer Profile Page — hp-* utility classes
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes h-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.hp-glass {
+  background: rgba(22, 22, 24, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(77, 71, 50, 0.2);
+}
+
+.hp-rim {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.hp-role-chip {
+  background: #201f20;
+  border-left: 4px solid #ffe16d;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #e5e2e3;
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+
+.hp-main {
+  padding-top: 80px;
+}
+
+.hp-prod-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(77, 71, 50, 0.15);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.hp-prod-card:hover {
+  transform: translateY(-8px);
+}
+
+.hp-prod-card:hover .hp-prod-thumb {
+  transform: scale(1.08);
+}
+
+.hp-prod-thumb {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s ease;
+}
+
+.hp-talent-tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.hp-talent-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hp-talent-tile:hover .hp-talent-overlay {
+  opacity: 1;
+}
+
+.hp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .hp-grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.hp-talent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.hp-stat-div {
+  width: 1px;
+  height: 48px;
+  background: rgba(77, 71, 50, 0.3);
+  margin-right: 32px;
+}
+
+@media (max-width: 768px) {
+  .hp-stat-div {
+    display: none;
+  }
+}
+@layer base {
+  .theme-light {
+    --background: 0 0% 100%;
+    --foreground: 270 2% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 270 2% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 2% 8%;
+    --primary: 51 100% 45%;
+    --primary-foreground: 48 100% 13%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 270 2% 14%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 270 2% 40%;
+    --accent: 51 100% 45%;
+    --accent-foreground: 48 100% 13%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 51 100% 45%;
+
+    --as-bg: #f9fafb;
+    --as-surface: #ffffff;
+    --as-border: rgba(0, 0, 0, 0.08);
+    --as-text: #111827;
+    --as-text-secondary: #4b5563;
+    --as-text-muted: #6b7280;
+    --as-accent: #d97706;
+    --as-accent-hover: #b45309;
+    --as-verified: #0284c7;
+    --as-live: #dc2626;
+  }
+}

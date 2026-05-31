@@ -1,0 +1,1017 @@
+
+> stagelink@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.56.1:3000
+✓ Ready in 469ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Nardin.Philip\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\package-lock.json
+
+
+○ Compiling /profile/[id] ...
+ GET /profile/t-4-3b7a720a 200 in 8.2s (next.js: 7.8s, proxy.ts: 155ms, application-code: 247ms)
+ GET /profile/from-amber-500%20via-orange-600%20to-red-700 200 in 64ms (next.js: 14ms, proxy.ts: 7ms, application-code: 43ms)
+✓ Compiled in 141ms
+ GET /profile/t-4-3b7a720a 200 in 303ms (next.js: 125ms, proxy.ts: 59ms, application-code: 119ms)
+ GET /network 200 in 608ms (next.js: 549ms, proxy.ts: 7ms, application-code: 51ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /lives 200 in 573ms (next.js: 523ms, proxy.ts: 11ms, application-code: 39ms)
+ GET /reels 200 in 576ms (next.js: 518ms, proxy.ts: 10ms, application-code: 48ms)
+[browser] Uncaught ReferenceError: showGitModal is not defined
+    at ReelsPage (../../UVAII Task/stagelink/src/app/reels/page.tsx:528:8)
+  526 |
+  527 |       {/* GIT Modal */}
+> 528 |       {showGitModal && selectedTalent && (
+      |        ^
+  529 |         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-bl...
+  530 |           onClick={() => setShowGitModal(false)}>
+  531 |           <div className="rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl"
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 263ms
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /reels 200 in 531ms (next.js: 137ms, proxy.ts: 121ms, application-code: 273ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 80ms
+ GET /reels 200 in 326ms (next.js: 84ms, proxy.ts: 59ms, application-code: 183ms)
+✓ Compiled in 143ms
+ GET /reels 200 in 381ms (next.js: 142ms, proxy.ts: 132ms, application-code: 108ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 111ms
+ GET /reels 200 in 524ms (next.js: 128ms, proxy.ts: 104ms, application-code: 292ms)
+✓ Compiled in 122ms
+ GET /reels 200 in 321ms (next.js: 131ms, proxy.ts: 88ms, application-code: 102ms)
+✓ Compiled in 77ms
+ GET /reels 200 in 186ms (next.js: 67ms, proxy.ts: 50ms, application-code: 69ms)
+✓ Compiled in 75ms
+ GET /reels 200 in 201ms (next.js: 84ms, proxy.ts: 59ms, application-code: 59ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 69ms
+ GET /reels 200 in 274ms (next.js: 69ms, proxy.ts: 51ms, application-code: 154ms)
+✓ Compiled in 74ms
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /reels 200 in 283ms (next.js: 75ms, proxy.ts: 59ms, application-code: 149ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 86ms
+ GET /reels 200 in 273ms (next.js: 68ms, proxy.ts: 56ms, application-code: 149ms)
+ GET /lives 200 in 81ms (next.js: 23ms, proxy.ts: 6ms, application-code: 51ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /network 200 in 70ms (next.js: 21ms, proxy.ts: 6ms, application-code: 44ms)
+⨯ Failed to generate static paths for /profile/[id]:
+Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError'
+}
+ GET /profile/t-4-3b7a720a 200 in 122ms (next.js: 34ms, proxy.ts: 10ms, application-code: 78ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/from-amber-500%20via-orange-600%20to-red-700'
+}
+ GET /profile/from-amber-500%20via-orange-600%20to-red-700 500 in 1390ms (next.js: 1185ms, proxy.ts: 18ms, application-code: 187ms)
+ GET /settings 200 in 468ms (next.js: 412ms, proxy.ts: 9ms, application-code: 47ms)
+✓ Compiled in 135ms
+ GET /settings 200 in 351ms (next.js: 143ms, proxy.ts: 115ms, application-code: 93ms)
+ GET /saved 200 in 424ms (next.js: 386ms, proxy.ts: 5ms, application-code: 33ms)
+ GET /settings 200 in 38ms (next.js: 4ms, proxy.ts: 10ms, application-code: 24ms)
+ GET /explore 200 in 490ms (next.js: 441ms, proxy.ts: 6ms, application-code: 43ms)
+ GET /reels 200 in 57ms (next.js: 19ms, proxy.ts: 5ms, application-code: 32ms)
+ GET /lives 200 in 59ms (next.js: 16ms, proxy.ts: 5ms, application-code: 38ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/lives/5'
+}
+ GET /lives/5 500 in 849ms (next.js: 817ms, proxy.ts: 5ms, application-code: 26ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/lives/5'
+}
+ GET /lives/5 500 in 209ms (next.js: 136ms, proxy.ts: 34ms, application-code: 39ms)
+[browser] Uncaught Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/lives/5'
+}
+ GET /lives/5 500 in 233ms (next.js: 193ms, proxy.ts: 7ms, application-code: 33ms)
+[browser] Uncaught Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+ GET /lives 200 in 318ms (next.js: 13ms, proxy.ts: 7ms, application-code: 298ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/t-6-9a2fc827'
+}
+ GET /profile/t-6-9a2fc827 500 in 260ms (next.js: 209ms, proxy.ts: 11ms, application-code: 40ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/t-6-9a2fc827'
+}
+ GET /profile/t-6-9a2fc827 500 in 135ms (next.js: 90ms, proxy.ts: 13ms, application-code: 32ms)
+[browser] Uncaught Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+ GET /lives 200 in 144ms (next.js: 7ms, proxy.ts: 14ms, application-code: 123ms)
+ GET /explore 200 in 98ms (next.js: 20ms, proxy.ts: 8ms, application-code: 70ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /notifications 200 in 412ms (next.js: 364ms, proxy.ts: 8ms, application-code: 39ms)
+ GET /network 200 in 67ms (next.js: 23ms, proxy.ts: 5ms, application-code: 39ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/t-4-3b7a720a'
+}
+ GET /profile/t-4-3b7a720a 500 in 80ms (next.js: 54ms, proxy.ts: 8ms, application-code: 18ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/t-4-3b7a720a'
+}
+ GET /profile/t-4-3b7a720a 500 in 135ms (next.js: 91ms, proxy.ts: 13ms, application-code: 31ms)
+[browser] Uncaught Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException: Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException:  Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+ GET /network 200 in 547ms (next.js: 30ms, proxy.ts: 26ms, application-code: 491ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/t-6-9a2fc827'
+}
+ GET /profile/t-6-9a2fc827 500 in 210ms (next.js: 138ms, proxy.ts: 25ms, application-code: 48ms)
+⨯ Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+    at ignore-listed frames {
+  type: 'WorkerError',
+  page: '/profile/t-6-9a2fc827'
+}
+ GET /profile/t-6-9a2fc827 500 in 312ms (next.js: 218ms, proxy.ts: 39ms, application-code: 56ms)
+[browser] Uncaught Error: Jest worker encountered 2 child process exceptions, exceeding retry limit
+Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException: Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException:  Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+Persisting failed: Unable to write SST file 00000370.sst
+
+Caused by:
+    The system cannot find the path specified. (os error 3)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\profile\[id]\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\profile\\[id]\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\profile\[id]\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\profile\\[id]\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\notifications\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\notifications\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\notifications\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\notifications\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\notifications\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\notifications\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\notifications\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\notifications\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\explore\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\explore\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\explore\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\explore\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /login 200 in 908ms (next.js: 483ms, proxy.ts: 37ms, application-code: 388ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /explore 200 in 263ms (next.js: 36ms, proxy.ts: 40ms, application-code: 187ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\lives\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\lives\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\lives\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\lives\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\lives\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\lives\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\lives\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\lives\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\lives\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\lives\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\lives\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\lives\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException: Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException:  Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+ GET /explore 200 in 564ms (next.js: 49ms, proxy.ts: 46ms, application-code: 469ms)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException: Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException:  Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException: Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+⨯ uncaughtException:  Error: write EPIPE
+    at ignore-listed frames {
+  errno: -4047,
+  code: 'EPIPE',
+  syscall: 'write'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /explore 200 in 932ms (next.js: 156ms, proxy.ts: 122ms, application-code: 655ms)
+ GET /explore 200 in 179ms (next.js: 62ms, proxy.ts: 59ms, application-code: 57ms)
+ GET /explore 200 in 185ms (next.js: 40ms, proxy.ts: 39ms, application-code: 107ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /explore 404 in 1175ms (next.js: 642ms, proxy.ts: 59ms, application-code: 475ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET /explore 200 in 569ms (next.js: 42ms, proxy.ts: 40ms, application-code: 487ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\app\network\page\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\app\\network\\page\\build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open 'C:\Users\Nardin.Philip\Desktop\UVAII Task\stagelink\.next\dev\server\pages\_app\build-manifest.json'
+    at ignore-listed frames {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Nardin.Philip\\Desktop\\UVAII Task\\stagelink\\.next\\dev\\server\\pages\\_app\\build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Compaction failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+[?25h
