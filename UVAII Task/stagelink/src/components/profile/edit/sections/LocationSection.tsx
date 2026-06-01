@@ -4,6 +4,31 @@ import { Input } from "@/components/ui/input";
 import { Plus, X, Lock } from "lucide-react";
 import { useState } from "react";
 
+const COUNTRIES: string[] = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+  "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia",
+  "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Brazzaville)", "Congo (Kinshasa)",
+  "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+  "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland",
+  "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea",
+  "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo",
+  "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania",
+  "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius",
+  "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia",
+  "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway",
+  "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland",
+  "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+  "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands",
+  "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland",
+  "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia",
+  "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
+  "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe",
+];
+
+const SELECT_CLASS = "bg-secondary/50 border border-border/60 rounded-lg px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary/30 focus:bg-background transition-all w-full";
+
 function Label({ children, hint, lock }: { children: React.ReactNode; hint?: string; lock?: boolean }) {
   return (
     <div className="mb-2">
@@ -61,7 +86,10 @@ export function LocationSection() {
       <div className="p-6 rounded-xl bg-card border border-border/50 shadow-sm space-y-6">
         <div>
           <Label>Home market *</Label>
-          <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. London, UK" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+          <select value={location} onChange={e => setLocation(e.target.value)} className={SELECT_CLASS}>
+            <option value="">Select country</option>
+            {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/40">
@@ -73,9 +101,26 @@ export function LocationSection() {
           </div>
           <div>
             <Label>Passport / citizenship</Label>
-            <TagInput values={travelInfo.passport_countries ?? []}
-              onChange={v => setTravelInfo((p: any) => ({ ...p, passport_countries: v }))}
-              placeholder="e.g. UK, Egypt" />
+            <select value="" onChange={e => {
+              const value = e.target.value;
+              if (!value) return;
+              setTravelInfo((p: any) => (p.passport_countries ?? []).includes(value)
+                ? p
+                : ({ ...p, passport_countries: [...(p.passport_countries ?? []), value] }));
+            }} className={`${SELECT_CLASS} mb-3`}>
+              <option value="">Add country</option>
+              {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <div className="flex flex-wrap gap-2">
+              {(travelInfo.passport_countries ?? []).map((v: string, i: number) => (
+                <Badge key={i} variant="secondary" className="pl-3 pr-1.5 py-1 flex items-center gap-1.5 text-xs font-medium rounded-full border border-border/40">
+                  {v}
+                  <button onClick={() => setTravelInfo((p: any) => ({ ...p, passport_countries: (p.passport_countries ?? []).filter((c: string) => c !== v) }))} className="hover:text-destructive transition-colors opacity-70 hover:opacity-100">
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
 
