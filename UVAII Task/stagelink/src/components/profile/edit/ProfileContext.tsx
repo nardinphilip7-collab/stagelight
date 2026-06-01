@@ -6,7 +6,7 @@ import { apiClient } from "@/lib/api";
 import { getUser } from "@/lib/auth";
 import { uploadFile } from "@/lib/upload";
 import { SectionId, SkillEntry, TrainingEntry, AwardEntry, PressMention, CreditEntry, UnionEntry, ReelEntry } from "./types";
-import { AGE_MIN, AGE_MAX, YEAR_MIN, YEAR_MAX, isPlausibleYear, isValidHttpUrl, isValidEmail, isFutureDate } from "@/lib/validation";
+import { AGE_MIN, AGE_MAX, YEAR_MIN, YEAR_MAX, isPlausibleYear, isValidHttpUrl, isValidEmail, isFutureDate, isValidPhone, isPositiveNumber } from "@/lib/validation";
 
 export function useProfileStateRoot() {
   const router = useRouter();
@@ -80,7 +80,7 @@ export function useProfileStateRoot() {
   const [newCredit, setNewCredit] = useState<CreditEntry>({ title: "", role: "", year: new Date().getFullYear(), collaborators: [] });
 
   // Training form (controlled)
-  const [newTraining, setNewTraining] = useState<TrainingEntry>({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school", certificate_url: "", certificate_name: "" });
+  const [newTraining, setNewTraining] = useState<TrainingEntry>({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school", ongoing: false, certificate_url: "", certificate_name: "" });
 
   // Awards form (controlled)
   const [newAward, setNewAward] = useState<AwardEntry>({ name: "", festival: "", project: "", year: "", url: "", award_type: "won" });
@@ -219,10 +219,11 @@ export function useProfileStateRoot() {
     if (playableMin !== "" && playableMax !== "" && Number(playableMin) > Number(playableMax))
       return "Minimum playable age can't be greater than the maximum.";
     if (isFutureDate(dob)) return "Date of birth can't be in the future.";
+    if (!isPositiveNumber(physicalStats.height)) return "Height must be a number greater than 0.";
     for (const t of training) {
       if (!isPlausibleYear(t.start_year) || !isPlausibleYear(t.end_year))
         return `Training years must be between ${YEAR_MIN} and ${YEAR_MAX}.`;
-      if (t.start_year && t.end_year && Number(t.start_year) > Number(t.end_year))
+      if (!t.ongoing && t.start_year && t.end_year && Number(t.start_year) > Number(t.end_year))
         return `Training "${t.school}" has a start year after its end year.`;
     }
     for (const a of awards) {
@@ -234,6 +235,8 @@ export function useProfileStateRoot() {
     }
     if (!isValidEmail(representation?.agent_email as string | undefined))
       return "Agent email is not a valid email address.";
+    if (!isValidPhone(representation?.agent_phone as string | undefined))
+      return "Agent phone is not a valid phone number.";
     return null;
   }
 
@@ -362,6 +365,8 @@ export function useProfileStateRoot() {
     setWindowSaveError("");
     try {
       if (!newWindow.start || !newWindow.end) throw new Error("Start and end dates are required.");
+      if (new Date(newWindow.start).getTime() > new Date(newWindow.end).getTime())
+        throw new Error("Start date can't be after the end date.");
       const created = await apiClient.post<any>("/availability/", {
         start_date: newWindow.start,
         end_date: newWindow.end,

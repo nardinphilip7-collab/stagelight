@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, Check, X, Search } from "lucide-react";
 
 import { COUNTRIES } from "@/lib/countries";
+import { MAX_MULTI_ITEMS } from "@/lib/validation";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -142,8 +143,9 @@ export function CountryMultiSelect({
 
   const results = useMemo(() => filterCountries(query, values), [query, values]);
 
+  const atLimit = values.length >= MAX_MULTI_ITEMS;
   const add = (c: string) => {
-    if (!values.includes(c)) onChange([...values, c]);
+    if (!values.includes(c) && !atLimit) onChange([...values, c]);
     setQuery("");
     inputRef.current?.focus();
   };

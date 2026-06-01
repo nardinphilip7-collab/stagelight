@@ -28,16 +28,19 @@ export function TrainingSection() {
 
   function addEntry() {
     if (!newTraining.school.trim()) { setErr("School / institution is required."); return; }
-    const { start_year, end_year } = newTraining;
+    if (!newTraining.program.trim()) { setErr("Programme / course is required."); return; }
+    if (!newTraining.start_year?.trim()) { setErr("Start year is required."); return; }
+    const { start_year, end_year, ongoing } = newTraining;
     if (!isPlausibleYear(start_year) || !isPlausibleYear(end_year)) {
       setErr(`Years must be 4 digits between ${YEAR_MIN} and ${YEAR_MAX}.`); return;
     }
-    if (start_year && end_year && Number(start_year) > Number(end_year)) {
+    if (!ongoing && start_year && end_year && Number(start_year) > Number(end_year)) {
       setErr("Start year can't be after the end year."); return;
     }
     setErr("");
-    setTraining(prev => [...prev, { ...newTraining }]);
-    setNewTraining({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school", certificate_url: "", certificate_name: "" });
+    // An ongoing entry has no end year.
+    setTraining(prev => [...prev, { ...newTraining, end_year: ongoing ? "" : end_year }]);
+    setNewTraining({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school", ongoing: false, certificate_url: "", certificate_name: "" });
   }
 
   return (
@@ -94,19 +97,20 @@ export function TrainingSection() {
           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Add training</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input value={newTraining.school} onChange={e => setNewTraining(p => ({ ...p, school: e.target.value }))} placeholder="School / institution" className="bg-background border-border/60 focus:bg-background transition-colors" />
-            <Input value={newTraining.program ?? ""} onChange={e => setNewTraining(p => ({ ...p, program: e.target.value }))} placeholder="Programme / course" className="bg-background border-border/60 focus:bg-background transition-colors" />
+            <Input value={newTraining.school} onChange={e => setNewTraining(p => ({ ...p, school: e.target.value }))} placeholder="School / institution *" className="bg-background border-border/60 focus:bg-background transition-colors" />
+            <Input value={newTraining.program ?? ""} onChange={e => setNewTraining(p => ({ ...p, program: e.target.value }))} placeholder="Programme / course *" className="bg-background border-border/60 focus:bg-background transition-colors" />
             <Input value={newTraining.degree ?? ""} onChange={e => setNewTraining(p => ({ ...p, degree: e.target.value }))} placeholder="Degree / qualification" className="bg-background border-border/60 focus:bg-background transition-colors" />
-            
+
             <div className="grid grid-cols-2 gap-3">
               <Input value={newTraining.start_year ?? ""} inputMode="numeric" maxLength={4}
                 onChange={e => setNewTraining(p => ({ ...p, start_year: sanitizeDigits(e.target.value, 4) }))}
-                placeholder="Start year" className="bg-background border-border/60 focus:bg-background transition-colors" />
-              <Input value={newTraining.end_year ?? ""} inputMode="numeric" maxLength={4}
+                placeholder="Start year *" className="bg-background border-border/60 focus:bg-background transition-colors" />
+              <Input value={newTraining.ongoing ? "" : (newTraining.end_year ?? "")} inputMode="numeric" maxLength={4}
+                disabled={newTraining.ongoing}
                 onChange={e => setNewTraining(p => ({ ...p, end_year: sanitizeDigits(e.target.value, 4) }))}
-                placeholder="End year" className="bg-background border-border/60 focus:bg-background transition-colors" />
+                placeholder={newTraining.ongoing ? "Ongoing" : "End year"} className="bg-background border-border/60 focus:bg-background transition-colors disabled:opacity-60" />
             </div>
-            
+
             <Input value={newTraining.instructor ?? ""} onChange={e => setNewTraining(p => ({ ...p, instructor: e.target.value }))} placeholder="Instructor name" className="bg-background border-border/60 focus:bg-background transition-colors" />
             
             <select value={newTraining.type ?? "school"} onChange={e => setNewTraining(p => ({ ...p, type: e.target.value }))}
@@ -116,6 +120,13 @@ export function TrainingSection() {
               <option value="workshop">Workshop</option>
               <option value="masterclass">Masterclass</option>
             </select>
+
+            <label className="flex items-center gap-2.5 cursor-pointer select-none md:col-span-2">
+              <input type="checkbox" checked={!!newTraining.ongoing}
+                onChange={e => setNewTraining(p => ({ ...p, ongoing: e.target.checked, end_year: e.target.checked ? "" : p.end_year }))}
+                className="rounded border-border" />
+              <span className="text-sm text-foreground/80">Currently ongoing (no end year)</span>
+            </label>
           </div>
 
           <div>

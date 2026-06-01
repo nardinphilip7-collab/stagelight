@@ -6,6 +6,16 @@ export const AGE_MAX = 120;
 export const YEAR_MIN = 1900;
 export const YEAR_MAX = new Date().getFullYear() + 10;
 
+// Text length caps (frontend-only guards mirroring the field-type spec).
+export const STAGE_NAME_MAX = 80;
+export const LEGAL_NAME_MAX = 120;
+export const AGENCY_MAX = 120;
+export const TAGLINE_MAX = 200;
+export const BIO_MAX = 2000;
+
+// Multi-select arrays: minItems 0, maxItems 50.
+export const MAX_MULTI_ITEMS = 50;
+
 /** Returns today's date as an ISO `YYYY-MM-DD` string (for <input type="date" max>). */
 export function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
@@ -52,6 +62,22 @@ export function isValidHttpUrl(value: string | undefined | null): boolean {
 export function isValidEmail(value: string | undefined | null): boolean {
   if (!value || !value.trim()) return true;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+/** True for a plausible phone number. Empty/blank is allowed. */
+export function isValidPhone(value: string | undefined | null): boolean {
+  if (!value || !value.trim()) return true;
+  const v = value.trim();
+  if (!/^[+\d().\-\s]+$/.test(v)) return false;
+  const digits = v.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 15;
+}
+
+/** True when a numeric value is strictly > 0. Empty/blank is allowed (optional fields). */
+export function isPositiveNumber(value: string | number | undefined | null): boolean {
+  if (value === undefined || value === null || String(value).trim() === "") return true;
+  const n = Number(value);
+  return !Number.isNaN(n) && n > 0;
 }
 
 /** True when an ISO date string is strictly after today. Empty/blank is not future. */

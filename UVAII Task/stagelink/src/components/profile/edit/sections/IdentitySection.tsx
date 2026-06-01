@@ -1,9 +1,7 @@
 import { useProfile } from "../ProfileContext";
 import { Input } from "@/components/ui/input";
 import { Lock } from "lucide-react";
-import { AGE_MIN, AGE_MAX, clampInt, todayISO } from "@/lib/validation";
-
-const BIO_MAX = 2000;
+import { AGE_MIN, AGE_MAX, clampInt, todayISO, BIO_MAX, STAGE_NAME_MAX, LEGAL_NAME_MAX, AGENCY_MAX } from "@/lib/validation";
 
 function Label({ children, hint, lock }: { children: React.ReactNode; hint?: string; lock?: boolean }) {
   return (
@@ -48,12 +46,12 @@ export function IdentitySection() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <Label>Stage name *</Label>
-              <Input value={talentName} onChange={e => setTalentName(e.target.value)} placeholder="Your stage name" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+              <Label hint={`${talentName.length}/${STAGE_NAME_MAX}`}>Stage name *</Label>
+              <Input value={talentName} maxLength={STAGE_NAME_MAX} onChange={e => setTalentName(e.target.value.slice(0, STAGE_NAME_MAX))} placeholder="Your stage name" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
             </div>
             <div>
               <Label lock hint="Only visible to you">Legal name</Label>
-              <Input value={legalName} onChange={e => setLegalName(e.target.value)} placeholder="Full legal name" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+              <Input value={legalName} maxLength={LEGAL_NAME_MAX} onChange={e => setLegalName(e.target.value.slice(0, LEGAL_NAME_MAX))} placeholder="Full legal name" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
             </div>
             <div>
               <Label>Pronouns</Label>
@@ -103,7 +101,7 @@ export function IdentitySection() {
           </div>
           <div>
             <Label hint="Your representation or management agency">Agency</Label>
-            <Input value={agency} onChange={e => setAgency(e.target.value)} placeholder="e.g. Creative Artists Agency" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+            <Input value={agency} maxLength={AGENCY_MAX} onChange={e => setAgency(e.target.value.slice(0, AGENCY_MAX))} placeholder="e.g. Creative Artists Agency" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
           </div>
         </div>
       </div>

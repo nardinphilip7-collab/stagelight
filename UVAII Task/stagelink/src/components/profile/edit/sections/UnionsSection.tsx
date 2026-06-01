@@ -1,11 +1,12 @@
 import { useProfile } from "../ProfileContext";
 import { Input } from "@/components/ui/input";
 import { Plus, X } from "lucide-react";
-import { sanitizeDigits, isValidEmail } from "@/lib/validation";
+import { sanitizeDigits, isValidEmail, isValidPhone } from "@/lib/validation";
 
 export function UnionsSection() {
   const { unions, setUnions, newUnion, setNewUnion, representation, setRepresentation, addUnion, removeUnion } = useProfile();
   const agentEmailInvalid = !isValidEmail(representation?.agent_email as string | undefined);
+  const agentPhoneInvalid = !isValidPhone(representation?.agent_phone as string | undefined);
 
   const UNION_OPTIONS = [
     "SAG-AFTRA", "Equity (UK)", "Actors' Equity Association (AEA)",
@@ -58,13 +59,15 @@ export function UnionsSection() {
             </div>
             <div>
               <label className="text-[13px] font-semibold text-foreground/80 tracking-wide mb-2 block">Agent Phone</label>
-              <Input 
+              <Input
                 type="tel"
-                value={representation?.agent_phone ?? ""} 
-                onChange={e => setRepresentation(p => ({ ...p, agent_phone: e.target.value }))} 
-                placeholder="+1 555-0123" 
-                className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" 
+                value={representation?.agent_phone ?? ""}
+                onChange={e => setRepresentation(p => ({ ...p, agent_phone: e.target.value }))}
+                placeholder="+1 555-0123"
+                aria-invalid={agentPhoneInvalid}
+                className="bg-secondary/50 border-border/60 focus:bg-background transition-colors"
               />
+              {agentPhoneInvalid && <p className="text-xs text-destructive mt-1">Enter a valid phone number.</p>}
             </div>
           </div>
         </div>

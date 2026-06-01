@@ -2,6 +2,7 @@ import { useProfile } from "../ProfileContext";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { CheckCircle2, Plus, X, Lock } from "lucide-react";
+import { MAX_MULTI_ITEMS } from "@/lib/validation";
 import { useState } from "react";
 
 function Label({ children, hint, lock }: { children: React.ReactNode; hint?: string; lock?: boolean }) {
@@ -20,7 +21,7 @@ function TagInput({ values, onChange, placeholder }: { values: string[]; onChang
   const [inp, setInp] = useState("");
   const add = () => {
     const v = inp.trim();
-    if (v && !values.includes(v)) onChange([...values, v]);
+    if (v && !values.includes(v) && values.length < MAX_MULTI_ITEMS) onChange([...values, v]);
     setInp("");
   };
   return (
@@ -75,7 +76,8 @@ const SKILL_CATEGORIES = [
   { key: "driving", label: "Driving & Licenses" },
   { key: "circus", label: "Circus & Specialty" },
 ];
-const SKILL_PROFICIENCY = ["Beginner", "Intermediate", "Advanced", "Expert", "Native"];
+// SkillLevel enum (shared across languages, accents, instruments, dance styles, …).
+const SKILL_PROFICIENCY = ["Beginner", "Intermediate", "Advanced", "Fluent", "Native", "Expert"];
 
 export function DisciplinesSection() {
   const {

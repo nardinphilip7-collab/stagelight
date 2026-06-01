@@ -22,7 +22,7 @@ export const SECTIONS = [
 export type SectionId = typeof SECTIONS[number]["id"];
 
 export interface SkillEntry { id?: number; category: string; name: string; proficiency: string; }
-export interface TrainingEntry { school: string; program: string; start_year?: string; end_year?: string; degree?: string; type?: string; instructor?: string; certificate_url?: string; certificate_name?: string; }
+export interface TrainingEntry { school: string; program: string; start_year?: string; end_year?: string; degree?: string; type?: string; instructor?: string; ongoing?: boolean; certificate_url?: string; certificate_name?: string; }
 export interface AwardEntry { name: string; project?: string; year?: string; festival?: string; award_type?: string; url?: string; }
 export interface PressMention { publication: string; headline: string; date?: string; url?: string; }
 export interface CreditEntry { id?: number; title: string; role: string; production_type?: string; year?: number; billing?: string; director?: string; collaborators?: string[]; }

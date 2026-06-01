@@ -1,6 +1,7 @@
 import { useProfile } from "../ProfileContext";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { MAX_MULTI_ITEMS } from "@/lib/validation";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
 
@@ -8,7 +9,7 @@ function TagInput({ values, onChange, placeholder }: { values: string[]; onChang
   const [inp, setInp] = useState("");
   const add = () => {
     const v = inp.trim();
-    if (v && !values.includes(v)) onChange([...values, v]);
+    if (v && !values.includes(v) && values.length < MAX_MULTI_ITEMS) onChange([...values, v]);
     setInp("");
   };
   return (
