@@ -146,10 +146,7 @@ export default function LoginPage() {
 
                 {/* Password Field */}
                 <div className="space-y-2 relative">
-                  <div className="flex justify-between items-center">
-                    <label className="font-outfit text-[14px] leading-[1.2] tracking-[0.05em] font-semibold text-[#d0c6ab] block uppercase" htmlFor="password">Password</label>
-                    <a className="font-outfit text-[14px] leading-[1.2] tracking-[0.05em] font-semibold text-[#e9c400] hover:text-[#ffd700] transition-colors duration-200" href="#">Forgot Password?</a>
-                  </div>
+                  <label className="font-outfit text-[14px] leading-[1.2] tracking-[0.05em] font-semibold text-[#d0c6ab] block uppercase mb-2" htmlFor="password">Password</label>
                   <div className="relative group">
                     <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#4d4732] text-base">lock</span>
                     <input 

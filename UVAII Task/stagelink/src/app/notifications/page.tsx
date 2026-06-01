@@ -152,14 +152,26 @@ export default function NotificationsPage() {
                         )}
                       </div>
                       <p className={`text-[15px] m-0 leading-relaxed ${isUnread ? 'text-[#fff6df] font-semibold' : 'text-[#d0c6ab] font-medium'}`}>
-                        {notif.body}
+                        {notif.body.split('||')[0]}
                       </p>
                       {notif.type === 'connection_request' && (
                         <button 
-                          onClick={(e) => { e.stopPropagation(); router.push('/network'); }} 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            const talentId = notif.body.split('||')[1];
+                            if (talentId) {
+                              if (talentId.startsWith('hirer:')) {
+                                router.push(`/profile/hirer/${talentId.split(':')[1]}`);
+                              } else {
+                                router.push(`/profile/${talentId}`);
+                              }
+                            } else {
+                              router.push('/network'); 
+                            }
+                          }} 
                           className="mt-3 px-4 py-1.5 bg-[#ffd700]/10 text-[#ffd700] border border-[#ffd700]/20 rounded-lg text-sm font-semibold hover:bg-[#ffd700]/20 transition-colors"
                         >
-                          View in Network
+                          View Profile
                         </button>
                       )}
                     </div>

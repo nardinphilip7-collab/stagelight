@@ -524,12 +524,6 @@ export default function FeedPage() {
                 {postImgUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                 Media
               </button>
-              <Link href="/events/new" className="flex-1 flex items-center justify-center gap-2 text-xs font-medium as-text-muted hover:as-accent transition-colors py-1">
-                <Calendar className="w-4 h-4" /> Event
-              </Link>
-              <button className="flex-1 flex items-center justify-center gap-2 text-xs font-medium as-text-muted hover:as-accent transition-colors py-1">
-                <FileText className="w-4 h-4" /> Article
-              </button>
             </div>
           )}
           <input

@@ -29,6 +29,8 @@ interface Opportunity {
   applicants: number;
   posted: string;
   deadline: string;
+  questionnaire?: { question: string; type: string }[];
+  portfolio_requirements?: { label: string; description: string }[];
 }
 
 interface Application {
@@ -97,6 +99,8 @@ export default function PipelinePage() {
   const [savingSharedNote, setSavingSharedNote] = useState<string | null>(null);
   const [videoSpeed, setVideoSpeed] = useState<Record<string, number>>({}); // appId -> speed multiplier
   const [offerAvailWindows, setOfferAvailWindows] = useState<Record<string, AvailWindow[]>>({}); // talentId -> windows
+  const [panelTab, setPanelTab] = useState<"submission" | "review" | "notes">("submission");
+
 
   useEffect(() => {
     const user = getUser();
@@ -229,6 +233,7 @@ export default function PipelinePage() {
     if (!form) return;
     try {
       const round = await apiClient.post<CallbackRound>("/callback-rounds/", {
+        opportunity: id,
         application: appId,
         round_number: form.round_number,
         scheduled_date: form.scheduled_date || null,
@@ -849,457 +854,519 @@ export default function PipelinePage() {
               </button>
             </div>
 
+            {/* Panel Tabs */}
+            <div style={{ display: "flex", gap: "16px", padding: "0 24px", borderBottom: `1px solid ${T.border}`, backgroundColor: T.surfaceLow, flexShrink: 0 }}>
+              {(["submission", "review", "notes"] as const).map(t => (
+                <button key={t} onClick={() => setPanelTab(t)} style={{
+                  padding: "12px 4px", fontSize: "13px", fontWeight: "600",
+                  background: "none", border: "none", cursor: "pointer",
+                  color: panelTab === t ? T.gold : T.muted,
+                  borderBottom: panelTab === t ? `2px solid ${T.gold}` : "2px solid transparent",
+                  marginBottom: "-1px", textTransform: "capitalize",
+                  transition: "color 0.15s",
+                }}>{t}</button>
+              ))}
+            </div>
+
             {/* Panel Content */}
             <div style={{ flex: 1, overflowY: "auto", padding: "24px" }}>
-
-              {/* Stage + Type badges */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "5px 12px", borderRadius: "9999px", backgroundColor: getStageConfig(selectedApp.stage).bg }}>
-                  <div style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: getStageConfig(selectedApp.stage).color }} />
-                  <span style={{ fontSize: "11px", fontWeight: "500", color: getStageConfig(selectedApp.stage).color }}>{selectedApp.stage}</span>
-                </div>
-                {selectedApp.opportunity_submission_type && (
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "5px 12px", borderRadius: "9999px", backgroundColor: T.surfaceHigh }}>
-                    <span style={{ fontSize: "11px", color: T.muted }}>{SUBMISSION_TYPE_LABELS[selectedApp.opportunity_submission_type] || selectedApp.opportunity_submission_type}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Star rating */}
-              <div style={{ marginBottom: "20px" }}>
-                <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Rating</h4>
-                <div style={{ display: "flex", gap: "4px" }}>
-                  {[1, 2, 3, 4, 5].map(n => (
-                    <button key={n} onClick={() => handleRate(selectedApp.id, n)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "22px", padding: "2px", color: (selectedApp.star_rating ?? 0) >= n ? "#F59E0B" : T.surfaceHigh }}>★</button>
-                  ))}
-                  {selectedApp.star_rating && (
-                    <button onClick={() => handleRate(selectedApp.id, null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color: T.muted, padding: "0 6px", alignSelf: "center" }}>Clear</button>
+              {panelTab === "submission" && (
+                <>
+                  {/* Cover Note */}
+                  {selectedApp.cover_note && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Cover Note</h4>
+                      <div style={{ backgroundColor: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "14px", borderLeft: `2px solid ${T.gold}` }}>
+                        <p style={{ fontSize: "13px", color: T.muted, margin: 0, lineHeight: "1.5" }}>"{selectedApp.cover_note}"</p>
+                      </div>
+                    </div>
                   )}
-                </div>
-              </div>
 
-              {/* Review state */}
-              <div style={{ marginBottom: "20px" }}>
-                <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Review State</h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                  {REVIEW_STATES.map(rs => {
-                    const active = (selectedApp.review_state || "pending") === rs.id;
+                  {/* Hiring Questions */}
+                  {(() => {
+                    const answers = selectedApp.questionnaire_answers || {};
+                    const questions = gig?.questionnaire && gig.questionnaire.length > 0
+                      ? gig.questionnaire.map(q => q.question)
+                      : Object.keys(answers);
+                    if (questions.length === 0) return null;
                     return (
-                      <button key={rs.id} onClick={() => handleReviewState(selectedApp.id, rs.id)} style={{ padding: "5px 12px", borderRadius: "9999px", fontSize: "12px", fontWeight: "500", border: `1px solid ${active ? rs.color : T.border}`, backgroundColor: active ? rs.color + "20" : "transparent", color: active ? rs.color : T.muted, cursor: "pointer" }}>
-                        {rs.label}
-                      </button>
+                      <div style={{ marginBottom: "20px" }}>
+                        <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Hiring Questions</h4>
+                        {questions.map((question, idx) => (
+                          <div key={idx} style={{ marginBottom: "10px" }}>
+                            <p style={{ fontSize: "12px", fontWeight: "600", color: T.text, marginBottom: "3px" }}>{question}</p>
+                            <p style={{ fontSize: "13px", color: T.muted, margin: 0, lineHeight: "1.5" }}>
+                              {answers[question]?.trim()
+                                ? answers[question]
+                                : <span style={{ color: T.mutedDim, fontStyle: "italic" }}>No answer</span>}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     );
-                  })}
-                </div>
-              </div>
+                  })()}
 
-              {/* Tags */}
-              <div style={{ marginBottom: "20px" }}>
-                <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Tag style={{ width: "12px", height: "12px" }} /> Tags
-                </h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "8px" }}>
-                  {(selectedApp.tags || []).map(tag => (
-                    <span key={tag} style={{ display: "inline-flex", alignItems: "center", gap: "4px", padding: "3px 10px", borderRadius: "9999px", backgroundColor: T.surfaceHigh, fontSize: "12px", color: T.text }}>
-                      {tag}
-                      <button onClick={() => handleRemoveTag(selectedApp.id, tag)} style={{ background: "none", border: "none", cursor: "pointer", color: T.mutedDim, padding: "0", lineHeight: 1 }}>×</button>
-                    </span>
-                  ))}
-                </div>
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <input value={tagInput[selectedApp.id] || ""} onChange={e => setTagInput(p => ({ ...p, [selectedApp.id]: e.target.value }))}
-                    onKeyDown={e => e.key === "Enter" && handleAddTag(selectedApp.id)}
-                    placeholder="Add tag…" style={{ flex: 1, padding: "7px 11px", borderRadius: "8px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "12px", outline: "none" }} />
-                  <button onClick={() => handleAddTag(selectedApp.id)} style={{ padding: "7px 14px", borderRadius: "8px", backgroundColor: T.gold, color: T.onGold, border: "none", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Add</button>
-                </div>
-              </div>
-
-              {/* Cover Note */}
-              {selectedApp.cover_note && (
-                <div style={{ marginBottom: "20px" }}>
-                  <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Cover Note</h4>
-                  <div style={{ backgroundColor: "rgba(255,255,255,0.04)", borderRadius: "12px", padding: "14px", borderLeft: `2px solid ${T.gold}` }}>
-                    <p style={{ fontSize: "13px", color: T.muted, margin: 0, lineHeight: "1.5" }}>"{selectedApp.cover_note}"</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Video Reel */}
-              {selectedApp.video_url && (
-                <div style={{ marginBottom: "20px" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                    <h4 style={{ fontSize: "11px", fontWeight: "600", color: "var(--as-text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Demo Reel</h4>
-                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                      <select value={videoSpeed[selectedApp.id] ?? 1} onChange={e => setVideoSpeed(p => ({ ...p, [selectedApp.id]: Number(e.target.value) }))} style={{ padding: "3px 8px", borderRadius: "6px", border: "1px solid var(--as-border)", fontSize: "12px", cursor: "pointer" }}>
-                        {[0.75, 1, 1.25, 1.5, 2].map(s => <option key={s} value={s}>{s}×</option>)}
-                      </select>
-                      <button onClick={() => setFullScreenUrl(selectedApp.video_url)} title="Fullscreen" style={{ background: "none", border: "1px solid var(--as-border)", borderRadius: "6px", cursor: "pointer", padding: "3px 6px" }}>
-                        <Maximize2 style={{ width: "12px", height: "12px", color: "var(--as-text-muted)" }} />
-                      </button>
+                  {/* Portfolio Submissions */}
+                  {selectedApp.portfolio_submissions && Object.keys(selectedApp.portfolio_submissions).length > 0 && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Portfolio Submissions</h4>
+                      {Object.entries(selectedApp.portfolio_submissions).map(([label, url]) => (
+                        <div key={label} style={{ marginBottom: "8px" }}>
+                          <p style={{ fontSize: "12px", fontWeight: "600", color: T.text, marginBottom: "2px" }}>{label}</p>
+                          <a href={url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "12px", color: T.gold, wordBreak: "break-all" }}>{url}</a>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                  <div style={{ position: "relative", backgroundColor: "#000", borderRadius: "12px", overflow: "hidden", aspectRatio: "16/9" }}>
-                    <video src={selectedApp.video_url} controls style={{ width: "100%", height: "100%", display: "block" }} ref={el => { if (el) el.playbackRate = videoSpeed[selectedApp.id] ?? 1; }} />
-                    {/* Watermark badge */}
-                    <div style={{ position: "absolute", top: "8px", right: "8px", backgroundColor: "rgba(0,0,0,0.6)", color: "white", fontSize: "10px", padding: "3px 8px", borderRadius: "9999px", backdropFilter: "blur(4px)", pointerEvents: "none" }}>
-                      Reviewing · {new Date().toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Audio player */}
-              {selectedApp.audio_url && (
-                <div style={{ marginBottom: "20px" }}>
-                  <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Mic style={{ width: "12px", height: "12px" }} /> Audio
-                  </h4>
-                  <div style={{ backgroundColor: T.surface, borderRadius: "10px", padding: "10px" }}>
-                    <audio controls src={selectedApp.audio_url} style={{ width: "100%" }} />
-                  </div>
-                </div>
-              )}
-
-              {/* PDF links */}
-              {selectedApp.pdf_urls && selectedApp.pdf_urls.length > 0 && (
-                <div style={{ marginBottom: "20px" }}>
-                  <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <FileText style={{ width: "12px", height: "12px" }} /> Documents
-                  </h4>
-                  {selectedApp.pdf_urls.map((url, i) => (
-                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 12px", borderRadius: "8px", backgroundColor: T.surfaceHigh, marginBottom: "6px", textDecoration: "none", color: T.gold, fontSize: "12px" }}>
-                      <FileText style={{ width: "14px", height: "14px" }} />
-                      {url.split("/").pop()}
-                    </a>
-                  ))}
-                </div>
-              )}
-
-              {/* Audition slot */}
-              {selectedApp.audition_slot && (
-                <div style={{ marginBottom: "20px" }}>
-                  <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Audition Slot</h4>
-                  <div style={{ padding: "10px 14px", borderRadius: "10px", backgroundColor: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)" }}>
-                    <p style={{ fontSize: "13px", fontWeight: "500", color: "#93C5FD", marginBottom: "2px" }}>
-                      {new Date(selectedApp.audition_slot.start_time).toLocaleString()} – {new Date(selectedApp.audition_slot.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                    </p>
-                    {selectedApp.audition_slot.location_or_link && <p style={{ fontSize: "12px", color: "#93C5FD", margin: 0, opacity: 0.8 }}>{selectedApp.audition_slot.location_or_link}</p>}
-                  </div>
-                </div>
-              )}
-
-              {/* Move Stage Section */}
-              <div style={{ marginBottom: "24px" }}>
-                <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px" }}>
-                  Move to Stage
-                </h4>
-                {stageError && (
-                  <div style={{ marginBottom: "10px", padding: "8px 12px", borderRadius: "8px", backgroundColor: "rgba(248,113,113,0.1)", color: "#F87171", fontSize: "12px" }}>
-                    {stageError}
-                  </div>
-                )}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
-                  {STAGES.map((stage) => (
-                    <button
-                      key={stage.id}
-                      onClick={() => {
-                        if (selectedApp.stage === stage.id) return;
-                        setConfirmMove({ appId: selectedApp.id, stageName: stage.id, stageLabel: stage.label, appName: selectedApp.talent_name || `Applicant #${selectedApp.talent}` });
-                      }}
-                      disabled={movingId === selectedApp.id}
-                      style={{
-                        padding: "8px 12px",
-                        borderRadius: "10px",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        backgroundColor: selectedApp.stage === stage.id ? stage.color : T.surface,
-                        color: selectedApp.stage === stage.id ? (T.bg) : T.muted,
-                        border: `1px solid ${selectedApp.stage === stage.id ? stage.color : T.border}`,
-                        cursor: selectedApp.stage === stage.id || movingId === selectedApp.id ? "default" : "pointer",
-                        transition: "all 0.2s",
-                        opacity: movingId === selectedApp.id ? 0.6 : 1,
-                      }}
-                    >
-                      {selectedApp.stage === stage.id && <CheckCircle2 style={{ width: "12px", height: "12px", display: "inline", marginRight: "6px" }} />}
-                      {stage.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Private Notes */}
-              <div style={{ marginBottom: "24px" }}>
-                <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <StickyNote style={{ width: "14px", height: "14px" }} />
-                  Private Notes
-                </h4>
-                <textarea
-                  value={noteValues[selectedApp.id] ?? ""}
-                  onChange={e => setNoteValues(prev => ({ ...prev, [selectedApp.id]: e.target.value }))}
-                  rows={4}
-                  placeholder="Add private notes about this applicant..."
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    borderRadius: "12px",
-                    border: `1px solid ${T.border}`,
-                    backgroundColor: T.surface,
-                    color: T.text,
-                    fontSize: "13px",
-                    resize: "vertical",
-                    outline: "none",
-                  }}
-                  onFocus={e => e.currentTarget.style.borderColor = T.gold}
-                  onBlur={e => e.currentTarget.style.borderColor = T.border}
-                />
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
-                  <button
-                    onClick={() => handleSaveNote(selectedApp.id)}
-                    disabled={savingNote === selectedApp.id}
-                    style={{
-                      padding: "6px 16px",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      backgroundColor: T.gold,
-                      color: T.onGold,
-                      border: "none",
-                      cursor: savingNote === selectedApp.id ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    {savingNote === selectedApp.id ? <Loader2 style={{ width: "12px", height: "12px", animation: "spin 0.8s linear infinite", display: "inline", marginRight: "6px" }} /> : null}
-                    Save Note
-                  </button>
-                  {noteSaved === selectedApp.id && (
-                    <span style={{ fontSize: "11px", color: "#34D399" }}>Saved</span>
                   )}
-                  {noteError === selectedApp.id && (
-                    <span style={{ fontSize: "11px", color: "#F87171" }}>Failed to save</span>
-                  )}
-                </div>
-              </div>
 
-              {/* Shared Notes */}
-              <div style={{ marginBottom: "24px" }}>
-                <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Users style={{ width: "14px", height: "14px" }} />
-                  Shared Notes
-                  <span style={{ fontSize: "10px", fontWeight: "400", color: T.muted, textTransform: "none", letterSpacing: 0 }}>(visible to all reviewers)</span>
-                </h4>
-                <textarea
-                  value={sharedNoteValues[selectedApp.id] ?? ""}
-                  onChange={e => setSharedNoteValues(prev => ({ ...prev, [selectedApp.id]: e.target.value }))}
-                  rows={3}
-                  placeholder="Add shared notes visible to all reviewers..."
-                  style={{ width: "100%", padding: "12px", borderRadius: "12px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "13px", resize: "vertical", outline: "none" }}
-                  onFocus={e => e.currentTarget.style.borderColor = T.gold}
-                  onBlur={e => e.currentTarget.style.borderColor = T.border}
-                />
-                <button
-                  onClick={() => handleSaveSharedNote(selectedApp.id)}
-                  disabled={savingSharedNote === selectedApp.id}
-                  style={{ marginTop: "8px", padding: "6px 16px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", backgroundColor: T.gold, color: T.onGold, border: "none", cursor: savingSharedNote === selectedApp.id ? "not-allowed" : "pointer" }}
-                >
-                  {savingSharedNote === selectedApp.id ? "Saving..." : "Save"}
-                </button>
-              </div>
-
-              {/* Make Offer Section — only visible when Approved */}
-              {selectedApp.stage === 'Approved' && <div style={{ marginBottom: "24px" }}>
-                <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <DollarSign style={{ width: "14px", height: "14px" }} />
-                  Make Offer
-                </h4>
-
-                {offerForms[selectedApp.id]?.success && (
-                  <div style={{ marginBottom: "12px", padding: "10px", borderRadius: "8px", backgroundColor: "rgba(52,211,153,0.1)", color: "#34D399", fontSize: "12px" }}>
-                    Offer sent successfully!
-                  </div>
-                )}
-
-                {offerForms[selectedApp.id]?.error && (
-                  <div style={{ marginBottom: "12px", padding: "10px", borderRadius: "8px", backgroundColor: "rgba(248,113,113,0.1)", color: "#F87171", fontSize: "12px" }}>
-                    {offerForms[selectedApp.id].error}
-                  </div>
-                )}
-
-                <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-                  <input
-                    type="text"
-                    placeholder="Amount"
-                    value={offerForms[selectedApp.id]?.amount ?? ''}
-                    onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], amount: e.target.value, success: false, error: '' } }))}
-                    style={{
-                      flex: 1,
-                      padding: "10px 12px",
-                      borderRadius: "10px",
-                      border: `1px solid ${T.border}`,
-                      backgroundColor: T.surface,
-                      color: T.text,
-                      fontSize: "13px",
-                      outline: "none",
-                    }}
-                    onFocus={e => e.currentTarget.style.borderColor = T.gold}
-                    onBlur={e => e.currentTarget.style.borderColor = T.border}
-                  />
-                  <select
-                    value={offerForms[selectedApp.id]?.currency ?? 'USD'}
-                    onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], currency: e.target.value } }))}
-                    style={{
-                      width: "80px",
-                      padding: "10px 8px",
-                      borderRadius: "10px",
-                      border: `1px solid ${T.border}`,
-                      backgroundColor: T.surface,
-                      color: T.text,
-                      fontSize: "13px",
-                      outline: "none",
-                    }}
-                  >
-                    <option>USD</option>
-                    <option>EUR</option>
-                    <option>GBP</option>
-                  </select>
-                </div>
-
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <input
-                    type="date"
-                    value={offerForms[selectedApp.id]?.start_date ?? ''}
-                    onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], start_date: e.target.value } }))}
-                    onFocus={() => loadTalentAvailability(selectedApp.talent)}
-                    style={{ flex: 1, padding: "10px 12px", borderRadius: "10px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "13px", outline: "none" }}
-                  />
-                  <input
-                    type="date"
-                    value={offerForms[selectedApp.id]?.end_date ?? ''}
-                    onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], end_date: e.target.value } }))}
-                    onFocus={() => loadTalentAvailability(selectedApp.talent)}
-                    style={{ flex: 1, padding: "10px 12px", borderRadius: "10px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "13px", outline: "none" }}
-                  />
-                </div>
-                {(() => {
-                  const conflict = getAvailConflict(selectedApp.talent, offerForms[selectedApp.id]?.start_date ?? "", offerForms[selectedApp.id]?.end_date ?? "");
-                  if (!conflict.message) return null;
-                  const styles: Record<string, { bg: string; color: string; border: string }> = {
-                    ok:       { bg: "rgba(52,211,153,0.08)",  color: "#34D399", border: "rgba(52,211,153,0.25)"  },
-                    warn:     { bg: "rgba(251,191,36,0.08)",  color: "#FBBF24", border: "rgba(251,191,36,0.25)"  },
-                    conflict: { bg: "rgba(248,113,113,0.08)", color: "#F87171", border: "rgba(248,113,113,0.25)" },
-                  };
-                  const s = styles[conflict.level];
-                  return (
-                    <div style={{ marginBottom: "12px", padding: "8px 12px", borderRadius: "8px", backgroundColor: s.bg, border: `1px solid ${s.border}`, fontSize: "12px", color: s.color }}>
-                      {conflict.level === "ok" ? "✓" : conflict.level === "warn" ? "⚠" : "✕"} {conflict.message}
-                    </div>
-                  );
-                })()}
-
-                <textarea
-                  rows={2}
-                  placeholder="Message (optional)"
-                  value={offerForms[selectedApp.id]?.message ?? ''}
-                  onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], message: e.target.value } }))}
-                  style={{
-                    width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: "10px",
-                    border: `1px solid ${T.border}`,
-                    backgroundColor: T.surface,
-                    color: T.text,
-                    fontSize: "13px",
-                    resize: "vertical",
-                    outline: "none",
-                    marginBottom: "12px",
-                  }}
-                />
-
-                <button
-                  onClick={async () => {
-                    const form = offerForms[selectedApp.id];
-                    if (!form || !form.amount) return;
-                    setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], submitting: true, error: '', success: false } }));
-                    try {
-                      await apiClient.post('/bookings/', {
-                        to_talent: selectedApp.talent,
-                        opportunity: id,
-                        amount: form.amount,
-                        currency: form.currency,
-                        message: form.message,
-                        start_date: form.start_date || null,
-                        end_date: form.end_date || null,
-                      });
-                      setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], submitting: false, success: true, amount: '', message: '', start_date: '', end_date: '' } }));
-                    } catch (err) {
-                      const msg = err instanceof Error ? err.message : 'Failed to send offer.';
-                      setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], submitting: false, error: msg } }));
-                    }
-                  }}
-                  disabled={offerForms[selectedApp.id]?.submitting || !offerForms[selectedApp.id]?.amount}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    backgroundColor: T.gold,
-                    color: T.onGold,
-                    border: "none",
-                    fontWeight: "600",
-                    cursor: offerForms[selectedApp.id]?.submitting || !offerForms[selectedApp.id]?.amount ? "not-allowed" : "pointer",
-                    opacity: offerForms[selectedApp.id]?.submitting || !offerForms[selectedApp.id]?.amount ? 0.6 : 1,
-                  }}
-                >
-                  {offerForms[selectedApp.id]?.submitting ? <Loader2 style={{ width: "14px", height: "14px", animation: "spin 0.8s linear infinite", display: "inline", marginRight: "6px" }} /> : <Send style={{ width: "14px", height: "14px", display: "inline", marginRight: "6px" }} />}
-                  Send Offer
-                </button>
-              </div>}
-
-              {/* Portfolio Link */}
-              <Link href={`/portfolio/${selectedApp.talent}`} style={{ textDecoration: "none" }}>
-                <button style={{
-                  width: "100%",
-                  padding: "12px",
-                  borderRadius: "10px",
-                  backgroundColor: "transparent",
-                  border: `1px solid ${T.border}`,
-                  color: T.gold,
-                  fontSize: "13px",
-                  fontWeight: "500",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}>
-                  View Portfolio
-                </button>
-              </Link>
-
-              {/* Activity accordion */}
-              <div style={{ marginTop: "20px", borderTop: `1px solid ${T.border}`, paddingTop: "20px" }}>
-                <button
-                  onClick={() => loadAuditLog(selectedApp.id)}
-                  style={{ display: "flex", alignItems: "center", gap: "6px", background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: "12px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", padding: "0" }}
-                >
-                  <Activity style={{ width: "13px", height: "13px" }} />
-                  Activity Log
-                  <ChevronDown style={{ width: "12px", height: "12px", transform: activityExpanded[selectedApp.id] ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
-                </button>
-                {activityExpanded[selectedApp.id] && (
-                  <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                    {(activityLogs[selectedApp.id] || []).length === 0 ? (
-                      <p style={{ fontSize: "12px", color: T.muted }}>No activity yet.</p>
-                    ) : (activityLogs[selectedApp.id] || []).map(entry => (
-                      <div key={entry.id} style={{ display: "flex", gap: "10px", fontSize: "12px" }}>
-                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: T.gold, marginTop: "5px", flexShrink: 0 }} />
-                        <div>
-                          <span style={{ color: T.text, fontWeight: "500" }}>{entry.action.replace(/_/g, " ")}</span>
-                          {entry.old_value && entry.new_value && (
-                            <span style={{ color: T.muted }}> · {entry.old_value} → {entry.new_value}</span>
-                          )}
-                          {entry.note && <p style={{ color: T.muted, margin: "2px 0 0" }}>{entry.note}</p>}
-                          <p style={{ color: T.mutedDim, fontSize: "11px", margin: "2px 0 0" }}>{new Date(entry.timestamp).toLocaleString()}</p>
+                  {/* Video Reel */}
+                  {selectedApp.video_url && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                        <h4 style={{ fontSize: "11px", fontWeight: "600", color: "var(--as-text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Demo Reel</h4>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                          <select value={videoSpeed[selectedApp.id] ?? 1} onChange={e => setVideoSpeed(p => ({ ...p, [selectedApp.id]: Number(e.target.value) }))} style={{ padding: "3px 8px", borderRadius: "6px", border: "1px solid var(--as-border)", fontSize: "12px", cursor: "pointer" }}>
+                            {[0.75, 1, 1.25, 1.5, 2].map(s => <option key={s} value={s}>{s}×</option>)}
+                          </select>
+                          <button onClick={() => setFullScreenUrl(selectedApp.video_url)} title="Fullscreen" style={{ background: "none", border: "1px solid var(--as-border)", borderRadius: "6px", cursor: "pointer", padding: "3px 6px" }}>
+                            <Maximize2 style={{ width: "12px", height: "12px", color: "var(--as-text-muted)" }} />
+                          </button>
                         </div>
                       </div>
-                    ))}
+                      <div style={{ position: "relative", backgroundColor: "#000", borderRadius: "12px", overflow: "hidden", aspectRatio: "16/9" }}>
+                        <video src={selectedApp.video_url} controls style={{ width: "100%", height: "100%", display: "block" }} ref={el => { if (el) el.playbackRate = videoSpeed[selectedApp.id] ?? 1; }} />
+                        {/* Watermark badge */}
+                        <div style={{ position: "absolute", top: "8px", right: "8px", backgroundColor: "rgba(0,0,0,0.6)", color: "white", fontSize: "10px", padding: "3px 8px", borderRadius: "9999px", backdropFilter: "blur(4px)", pointerEvents: "none" }}>
+                          Reviewing · {new Date().toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Audio player */}
+                  {selectedApp.audio_url && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Mic style={{ width: "12px", height: "12px" }} /> Audio
+                      </h4>
+                      <div style={{ backgroundColor: T.surface, borderRadius: "10px", padding: "10px" }}>
+                        <audio controls src={selectedApp.audio_url} style={{ width: "100%" }} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* PDF links */}
+                  {selectedApp.pdf_urls && selectedApp.pdf_urls.length > 0 && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <FileText style={{ width: "12px", height: "12px" }} /> Documents
+                      </h4>
+                      {selectedApp.pdf_urls.map((url, i) => (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 12px", borderRadius: "8px", backgroundColor: T.surfaceHigh, marginBottom: "6px", textDecoration: "none", color: T.gold, fontSize: "12px" }}>
+                          <FileText style={{ width: "14px", height: "14px" }} />
+                          {url.split("/").pop()}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Portfolio Link */}
+                  <Link href={`/portfolio/${selectedApp.talent}`} style={{ textDecoration: "none" }}>
+                    <button style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "10px",
+                      backgroundColor: "transparent",
+                      border: `1px solid ${T.border}`,
+                      color: T.gold,
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}>
+                      View Portfolio
+                    </button>
+                  </Link>
+                </>
+              )}
+
+              {panelTab === "review" && (
+                <>
+                  {/* Stage + Type badges */}
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "5px 12px", borderRadius: "9999px", backgroundColor: getStageConfig(selectedApp.stage).bg }}>
+                      <div style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: getStageConfig(selectedApp.stage).color }} />
+                      <span style={{ fontSize: "11px", fontWeight: "500", color: getStageConfig(selectedApp.stage).color }}>{selectedApp.stage}</span>
+                    </div>
+                    {selectedApp.opportunity_submission_type && (
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "5px 12px", borderRadius: "9999px", backgroundColor: T.surfaceHigh }}>
+                        <span style={{ fontSize: "11px", color: T.muted }}>{SUBMISSION_TYPE_LABELS[selectedApp.opportunity_submission_type] || selectedApp.opportunity_submission_type}</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+
+                  {/* Star rating */}
+                  <div style={{ marginBottom: "20px" }}>
+                    <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Rating</h4>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <button key={n} onClick={() => handleRate(selectedApp.id, n)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "22px", padding: "2px", color: (selectedApp.star_rating ?? 0) >= n ? "#F59E0B" : T.surfaceHigh }}>★</button>
+                      ))}
+                      {selectedApp.star_rating && (
+                        <button onClick={() => handleRate(selectedApp.id, null)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color: T.muted, padding: "0 6px", alignSelf: "center" }}>Clear</button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Review state */}
+                  <div style={{ marginBottom: "20px" }}>
+                    <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Review State</h4>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {REVIEW_STATES.map(rs => {
+                        const active = (selectedApp.review_state || "pending") === rs.id;
+                        return (
+                          <button key={rs.id} onClick={() => handleReviewState(selectedApp.id, rs.id)} style={{ padding: "5px 12px", borderRadius: "9999px", fontSize: "12px", fontWeight: "500", border: `1px solid ${active ? rs.color : T.border}`, backgroundColor: active ? rs.color + "20" : "transparent", color: active ? rs.color : T.muted, cursor: "pointer" }}>
+                            {rs.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div style={{ marginBottom: "20px" }}>
+                    <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Tag style={{ width: "12px", height: "12px" }} /> Tags
+                    </h4>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "8px" }}>
+                      {(selectedApp.tags || []).map(tag => (
+                        <span key={tag} style={{ display: "inline-flex", alignItems: "center", gap: "4px", padding: "3px 10px", borderRadius: "9999px", backgroundColor: T.surfaceHigh, fontSize: "12px", color: T.text }}>
+                          {tag}
+                          <button onClick={() => handleRemoveTag(selectedApp.id, tag)} style={{ background: "none", border: "none", cursor: "pointer", color: T.mutedDim, padding: "0", lineHeight: 1 }}>×</button>
+                        </span>
+                      ))}
+                    </div>
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      <input value={tagInput[selectedApp.id] || ""} onChange={e => setTagInput(p => ({ ...p, [selectedApp.id]: e.target.value }))}
+                        onKeyDown={e => e.key === "Enter" && handleAddTag(selectedApp.id)}
+                        placeholder="Add tag…" style={{ flex: 1, padding: "7px 11px", borderRadius: "8px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "12px", outline: "none" }} />
+                      <button onClick={() => handleAddTag(selectedApp.id)} style={{ padding: "7px 14px", borderRadius: "8px", backgroundColor: T.gold, color: T.onGold, border: "none", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}>Add</button>
+                    </div>
+                  </div>
+
+                  {/* Audition slot */}
+                  {selectedApp.audition_slot && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <h4 style={{ fontSize: "11px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "8px" }}>Audition Slot</h4>
+                      <div style={{ padding: "10px 14px", borderRadius: "10px", backgroundColor: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)" }}>
+                        <p style={{ fontSize: "13px", fontWeight: "500", color: "#93C5FD", marginBottom: "2px" }}>
+                          {new Date(selectedApp.audition_slot.start_time).toLocaleString()} – {new Date(selectedApp.audition_slot.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </p>
+                        {selectedApp.audition_slot.location_or_link && <p style={{ fontSize: "12px", color: "#93C5FD", margin: 0, opacity: 0.8 }}>{selectedApp.audition_slot.location_or_link}</p>}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Move Stage Section */}
+                  <div style={{ marginBottom: "24px" }}>
+                    <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px" }}>
+                      Move to Stage
+                    </h4>
+                    {stageError && (
+                      <div style={{ marginBottom: "10px", padding: "8px 12px", borderRadius: "8px", backgroundColor: "rgba(248,113,113,0.1)", color: "#F87171", fontSize: "12px" }}>
+                        {stageError}
+                      </div>
+                    )}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
+                      {STAGES.map((stage) => (
+                        <button
+                          key={stage.id}
+                          onClick={() => {
+                            if (selectedApp.stage === stage.id) return;
+                            setConfirmMove({ appId: selectedApp.id, stageName: stage.id, stageLabel: stage.label, appName: selectedApp.talent_name || `Applicant #${selectedApp.talent}` });
+                          }}
+                          disabled={movingId === selectedApp.id}
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: "10px",
+                            fontSize: "12px",
+                            fontWeight: "500",
+                            backgroundColor: selectedApp.stage === stage.id ? stage.color : T.surface,
+                            color: selectedApp.stage === stage.id ? (T.bg) : T.muted,
+                            border: `1px solid ${selectedApp.stage === stage.id ? stage.color : T.border}`,
+                            cursor: selectedApp.stage === stage.id || movingId === selectedApp.id ? "default" : "pointer",
+                            transition: "all 0.2s",
+                            opacity: movingId === selectedApp.id ? 0.6 : 1,
+                          }}
+                        >
+                          {selectedApp.stage === stage.id && <CheckCircle2 style={{ width: "12px", height: "12px", display: "inline", marginRight: "6px" }} />}
+                          {stage.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Make Offer Section — only visible when Approved */}
+                  {selectedApp.stage === 'Approved' && <div style={{ marginBottom: "24px" }}>
+                    <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <DollarSign style={{ width: "14px", height: "14px" }} />
+                      Make Offer
+                    </h4>
+
+                    {offerForms[selectedApp.id]?.success && (
+                      <div style={{ marginBottom: "12px", padding: "10px", borderRadius: "8px", backgroundColor: "rgba(52,211,153,0.1)", color: "#34D399", fontSize: "12px" }}>
+                        Offer sent successfully!
+                      </div>
+                    )}
+
+                    {offerForms[selectedApp.id]?.error && (
+                      <div style={{ marginBottom: "12px", padding: "10px", borderRadius: "8px", backgroundColor: "rgba(248,113,113,0.1)", color: "#F87171", fontSize: "12px" }}>
+                        {offerForms[selectedApp.id].error}
+                      </div>
+                    )}
+
+                    <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+                      <input
+                        type="text"
+                        placeholder="Amount"
+                        value={offerForms[selectedApp.id]?.amount ?? ''}
+                        onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], amount: e.target.value, success: false, error: '' } }))}
+                        style={{
+                          flex: 1,
+                          padding: "10px 12px",
+                          borderRadius: "10px",
+                          border: `1px solid ${T.border}`,
+                          backgroundColor: T.surface,
+                          color: T.text,
+                          fontSize: "13px",
+                          outline: "none",
+                        }}
+                        onFocus={e => e.currentTarget.style.borderColor = T.gold}
+                        onBlur={e => e.currentTarget.style.borderColor = T.border}
+                      />
+                      <select
+                        value={offerForms[selectedApp.id]?.currency ?? 'USD'}
+                        onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], currency: e.target.value } }))}
+                        style={{
+                          width: "80px",
+                          padding: "10px 8px",
+                          borderRadius: "10px",
+                          border: `1px solid ${T.border}`,
+                          backgroundColor: T.surface,
+                          color: T.text,
+                          fontSize: "13px",
+                          outline: "none",
+                        }}
+                      >
+                        <option>USD</option>
+                        <option>EUR</option>
+                        <option>GBP</option>
+                      </select>
+                    </div>
+
+                    <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                      <input
+                        type="date"
+                        value={offerForms[selectedApp.id]?.start_date ?? ''}
+                        onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], start_date: e.target.value } }))}
+                        onFocus={() => loadTalentAvailability(selectedApp.talent)}
+                        style={{ flex: 1, padding: "10px 12px", borderRadius: "10px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "13px", outline: "none" }}
+                      />
+                      <input
+                        type="date"
+                        value={offerForms[selectedApp.id]?.end_date ?? ''}
+                        onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], end_date: e.target.value } }))}
+                        onFocus={() => loadTalentAvailability(selectedApp.talent)}
+                        style={{ flex: 1, padding: "10px 12px", borderRadius: "10px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "13px", outline: "none" }}
+                      />
+                    </div>
+                    {(() => {
+                      const conflict = getAvailConflict(selectedApp.talent, offerForms[selectedApp.id]?.start_date ?? "", offerForms[selectedApp.id]?.end_date ?? "");
+                      if (!conflict.message) return null;
+                      const styles = {
+                        ok:       { bg: "rgba(52,211,153,0.08)",  color: "#34D399", border: "rgba(52,211,153,0.25)"  },
+                        warn:     { bg: "rgba(251,191,36,0.08)",  color: "#FBBF24", border: "rgba(251,191,36,0.25)"  },
+                        conflict: { bg: "rgba(248,113,113,0.08)", color: "#F87171", border: "rgba(248,113,113,0.25)" },
+                      };
+                      const s = styles[conflict.level];
+                      return (
+                        <div style={{ marginBottom: "12px", padding: "8px 12px", borderRadius: "8px", backgroundColor: s.bg, border: `1px solid ${s.border}`, fontSize: "12px", color: s.color }}>
+                          {conflict.level === "ok" ? "✓" : conflict.level === "warn" ? "⚠" : "✕"} {conflict.message}
+                        </div>
+                      );
+                    })()}
+
+                    <textarea
+                      rows={2}
+                      placeholder="Message (optional)"
+                      value={offerForms[selectedApp.id]?.message ?? ''}
+                      onChange={e => setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], message: e.target.value } }))}
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: `1px solid ${T.border}`,
+                        backgroundColor: T.surface,
+                        color: T.text,
+                        fontSize: "13px",
+                        resize: "vertical",
+                        outline: "none",
+                        marginBottom: "12px",
+                      }}
+                    />
+
+                    <button
+                      onClick={async () => {
+                        const form = offerForms[selectedApp.id];
+                        if (!form || !form.amount) return;
+                        setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], submitting: true, error: '', success: false } }));
+                        try {
+                          await apiClient.post('/bookings/', {
+                            to_talent: selectedApp.talent,
+                            opportunity: id,
+                            amount: form.amount,
+                            currency: form.currency,
+                            message: form.message,
+                            start_date: form.start_date || null,
+                            end_date: form.end_date || null,
+                          });
+                          setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], submitting: false, success: true, amount: '', message: '', start_date: '', end_date: '' } }));
+                        } catch (err) {
+                          const msg = err instanceof Error ? err.message : 'Failed to send offer.';
+                          setOfferForms(prev => ({ ...prev, [selectedApp.id]: { ...prev[selectedApp.id], submitting: false, error: msg } }));
+                        }
+                      }}
+                      disabled={offerForms[selectedApp.id]?.submitting || !offerForms[selectedApp.id]?.amount}
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        borderRadius: "10px",
+                        backgroundColor: T.gold,
+                        color: T.onGold,
+                        border: "none",
+                        fontWeight: "600",
+                        cursor: offerForms[selectedApp.id]?.submitting || !offerForms[selectedApp.id]?.amount ? "not-allowed" : "pointer",
+                        opacity: offerForms[selectedApp.id]?.submitting || !offerForms[selectedApp.id]?.amount ? 0.6 : 1,
+                      }}
+                    >
+                      {offerForms[selectedApp.id]?.submitting ? <Loader2 style={{ width: "14px", height: "14px", animation: "spin 0.8s linear infinite", display: "inline", marginRight: "6px" }} /> : <Send style={{ width: "14px", height: "14px", display: "inline", marginRight: "6px" }} />}
+                      Send Offer
+                    </button>
+                  </div>}
+                </>
+              )}
+
+              {panelTab === "notes" && (
+                <>
+                  {/* Private Notes */}
+                  <div style={{ marginBottom: "24px" }}>
+                    <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <StickyNote style={{ width: "14px", height: "14px" }} />
+                      Private Notes
+                    </h4>
+                    <textarea
+                      value={noteValues[selectedApp.id] ?? ""}
+                      onChange={e => setNoteValues(prev => ({ ...prev, [selectedApp.id]: e.target.value }))}
+                      rows={4}
+                      placeholder="Add private notes about this applicant..."
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        borderRadius: "12px",
+                        border: `1px solid ${T.border}`,
+                        backgroundColor: T.surface,
+                        color: T.text,
+                        fontSize: "13px",
+                        resize: "vertical",
+                        outline: "none",
+                      }}
+                      onFocus={e => e.currentTarget.style.borderColor = T.gold}
+                      onBlur={e => e.currentTarget.style.borderColor = T.border}
+                    />
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
+                      <button
+                        onClick={() => handleSaveNote(selectedApp.id)}
+                        disabled={savingNote === selectedApp.id}
+                        style={{
+                          padding: "6px 16px",
+                          borderRadius: "8px",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          backgroundColor: T.gold,
+                          color: T.onGold,
+                          border: "none",
+                          cursor: savingNote === selectedApp.id ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        {savingNote === selectedApp.id ? <Loader2 style={{ width: "12px", height: "12px", animation: "spin 0.8s linear infinite", display: "inline", marginRight: "6px" }} /> : null}
+                        Save Note
+                      </button>
+                      {noteSaved === selectedApp.id && (
+                        <span style={{ fontSize: "11px", color: "#34D399" }}>Saved</span>
+                      )}
+                      {noteError === selectedApp.id && (
+                        <span style={{ fontSize: "11px", color: "#F87171" }}>Failed to save</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Shared Notes */}
+                  <div style={{ marginBottom: "24px" }}>
+                    <h4 style={{ fontSize: "12px", fontWeight: "600", color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <Users style={{ width: "14px", height: "14px" }} />
+                      Shared Notes
+                      <span style={{ fontSize: "10px", fontWeight: "400", color: T.muted, textTransform: "none", letterSpacing: 0 }}>(visible to all reviewers)</span>
+                    </h4>
+                    <textarea
+                      value={sharedNoteValues[selectedApp.id] ?? ""}
+                      onChange={e => setSharedNoteValues(prev => ({ ...prev, [selectedApp.id]: e.target.value }))}
+                      rows={3}
+                      placeholder="Add shared notes visible to all reviewers..."
+                      style={{ width: "100%", padding: "12px", borderRadius: "12px", border: `1px solid ${T.border}`, backgroundColor: T.surface, color: T.text, fontSize: "13px", resize: "vertical", outline: "none" }}
+                      onFocus={e => e.currentTarget.style.borderColor = T.gold}
+                      onBlur={e => e.currentTarget.style.borderColor = T.border}
+                    />
+                    <button
+                      onClick={() => handleSaveSharedNote(selectedApp.id)}
+                      disabled={savingSharedNote === selectedApp.id}
+                      style={{ marginTop: "8px", padding: "6px 16px", borderRadius: "8px", fontSize: "12px", fontWeight: "600", backgroundColor: T.gold, color: T.onGold, border: "none", cursor: savingSharedNote === selectedApp.id ? "not-allowed" : "pointer" }}
+                    >
+                      {savingSharedNote === selectedApp.id ? "Saving..." : "Save"}
+                    </button>
+                  </div>
+
+                  {/* Activity accordion */}
+                  <div style={{ marginTop: "20px", borderTop: `1px solid ${T.border}`, paddingTop: "20px" }}>
+                    <button
+                      onClick={() => loadAuditLog(selectedApp.id)}
+                      style={{ display: "flex", alignItems: "center", gap: "6px", background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: "12px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", padding: "0" }}
+                    >
+                      <Activity style={{ width: "13px", height: "13px" }} />
+                      Activity Log
+                      <ChevronDown style={{ width: "12px", height: "12px", transform: activityExpanded[selectedApp.id] ? "rotate(180deg)" : "none", transition: "transform 0.2s" }} />
+                    </button>
+                    {activityExpanded[selectedApp.id] && (
+                      <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                        {(activityLogs[selectedApp.id] || []).length === 0 ? (
+                          <p style={{ fontSize: "12px", color: T.muted }}>No activity yet.</p>
+                        ) : (activityLogs[selectedApp.id] || []).map(entry => (
+                          <div key={entry.id} style={{ display: "flex", gap: "10px", fontSize: "12px" }}>
+                            <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: T.gold, marginTop: "5px", flexShrink: 0 }} />
+                            <div>
+                              <span style={{ color: T.text, fontWeight: "500" }}>{entry.action.replace(/_/g, " ")}</span>
+                              {entry.old_value && entry.new_value && (
+                                <span style={{ color: T.muted }}> · {entry.old_value} → {entry.new_value}</span>
+                              )}
+                              {entry.note && <p style={{ color: T.muted, margin: "2px 0 0" }}>{entry.note}</p>}
+                              <p style={{ color: T.mutedDim, fontSize: "11px", margin: "2px 0 0" }}>{new Date(entry.timestamp).toLocaleString()}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </>

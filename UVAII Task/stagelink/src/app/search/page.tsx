@@ -196,7 +196,7 @@ function ArtistFilterSidebar({
         <span className="font-bold text-[var(--as-text)] flex items-center gap-2 text-sm">
           <SlidersHorizontal className="w-4 h-4 text-[var(--as-accent)]" />
           Artist Filters
-          {count > 0 && <span className="bg-[var(--as-accent)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{count}</span>}
+          {count > 0 && <span className="bg-[var(--as-accent)] text-[#221b00] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{count}</span>}
         </span>
         {count > 0 && <button onClick={onClear} className="text-xs text-[var(--as-accent)] hover:underline font-semibold">Clear</button>}
       </div>
@@ -279,7 +279,7 @@ function BriefFilterSidebar({
         <span className="font-bold text-[var(--as-text)] flex items-center gap-2 text-sm">
           <SlidersHorizontal className="w-4 h-4 text-[var(--as-accent)]" />
           Brief Filters
-          {count > 0 && <span className="bg-[var(--as-accent)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{count}</span>}
+          {count > 0 && <span className="bg-[var(--as-accent)] text-[#221b00] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{count}</span>}
         </span>
         {count > 0 && <button onClick={onClear} className="text-xs text-[var(--as-accent)] hover:underline font-semibold">Clear</button>}
       </div>
@@ -336,7 +336,7 @@ function ContentFilterSidebar({
         <span className="font-bold text-[var(--as-text)] flex items-center gap-2 text-sm">
           <SlidersHorizontal className="w-4 h-4 text-[var(--as-accent)]" />
           Content Filters
-          {count > 0 && <span className="bg-[var(--as-accent)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{count}</span>}
+          {count > 0 && <span className="bg-[var(--as-accent)] text-[#221b00] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{count}</span>}
         </span>
         {count > 0 && <button onClick={onClear} className="text-xs text-[var(--as-accent)] hover:underline font-semibold">Clear</button>}
       </div>
@@ -450,7 +450,7 @@ function SaveSearchForm({
       </div>
       <div className="flex gap-2">
         <button onClick={() => name.trim() && onSave(name.trim(), notif)}
-          className="flex-1 py-2 rounded-xl bg-[var(--as-accent)] text-white text-sm font-bold hover:shadow-md transition-all disabled:opacity-50"
+          className="flex-1 py-2 rounded-xl bg-[var(--as-accent)] text-[#221b00] text-sm font-bold hover:shadow-md transition-all disabled:opacity-50"
           disabled={!name.trim()}>
           Save
         </button>
@@ -668,7 +668,7 @@ function SearchResults() {
                 className="w-full pl-10 pr-24 py-3 rounded-2xl border border-[var(--as-border)] bg-[var(--as-bg)] text-[var(--as-text)] focus:outline-none focus:border-[var(--as-accent)] focus:ring-4 focus:ring-[var(--as-accent)]/10 transition-all text-sm"
               />
               <button type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--as-accent)] text-white px-4 py-1.5 rounded-xl font-bold hover:shadow-lg transition-all text-sm">
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--as-accent)] text-[#221b00] px-4 py-1.5 rounded-xl font-bold hover:shadow-lg transition-all text-sm">
                 Search
               </button>
 
@@ -803,7 +803,7 @@ function SearchResults() {
               className="shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[var(--as-border)] text-sm font-semibold text-[var(--as-text-muted)] hover:border-[var(--as-accent)] hover:text-[var(--as-accent)] transition-all">
               <Bookmark className="w-4 h-4" />
               <span className="hidden sm:inline">Saved</span>
-              {savedSearches.length > 0 && <span className="bg-[var(--as-accent)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{savedSearches.length}</span>}
+              {savedSearches.length > 0 && <span className="bg-[var(--as-accent)] text-[#221b00] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{savedSearches.length}</span>}
             </button>
           </div>
 
@@ -834,7 +834,7 @@ function SearchResults() {
             <button onClick={() => setFilterOpen(o => !o)}
               className="flex lg:hidden items-center gap-2 px-3 py-2 rounded-full border border-[var(--as-border)] text-sm font-semibold text-[var(--as-text-muted)] hover:border-[var(--as-accent)] hover:text-[var(--as-accent)] transition-all">
               <Filter className="w-4 h-4" /> Filters
-              {currentFilterCount > 0 && <span className="bg-[var(--as-accent)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{currentFilterCount}</span>}
+              {currentFilterCount > 0 && <span className="bg-[var(--as-accent)] text-[#221b00] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{currentFilterCount}</span>}
             </button>
           </div>
         </div>

@@ -45,7 +45,7 @@ export function OnboardingGate() {
 
     let cancelled = false;
     apiClient
-      .get<{ onboarding_complete?: boolean }>("/auth/me/")
+      .get<{ onboarding_complete?: boolean }>("/auth/me/", true)
       .then((me) => {
         if (cancelled) return;
         if (me?.onboarding_complete) {

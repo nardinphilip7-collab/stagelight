@@ -63,7 +63,11 @@ class OwnerWriteMixin:
 
     def check_object_permissions(self, request, obj):
         super().check_object_permissions(request, obj)
-        if request.method not in ('GET', 'HEAD', 'OPTIONS') and self._owner_of(obj) != request.user:
+        # Only guard the built-in write actions. Custom @action endpoints
+        # (apply, book, like, accept, …) operate on objects the actor may not
+        # own and enforce their own permissions.
+        if getattr(self, 'action', None) in ('update', 'partial_update', 'destroy') \
+                and self._owner_of(obj) != request.user:
             raise PermissionDenied('You can only modify your own items.')
 
 
@@ -218,15 +222,20 @@ class OpportunityViewSet(OwnerWriteMixin, viewsets.ModelViewSet):
             queryset = queryset.filter(category__icontains=category)
         if role_type := p.get('role_type'):
             queryset = queryset.filter(type__icontains=role_type)
-        if location := p.get('location'):
-            queryset = queryset.filter(location__icontains=location)
         if pay_range := p.get('pay_range'):
             queryset = queryset.filter(compensation__icontains=pay_range)
+        if location := p.get('location'):
+            queryset = queryset.filter(location__icontains=location)
         if union := p.get('union'):
             queryset = queryset.filter(description__icontains=union)
         if deadline := p.get('deadline'):
             queryset = queryset.filter(deadline__icontains=deadline)
-        return queryset
+        return queryset.order_by('-id')
+
+    def check_object_permissions(self, request, obj):
+        if self.action == 'apply':
+            return
+        super().check_object_permissions(request, obj)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -430,12 +439,18 @@ class FeedItemViewSet(OwnerWriteMixin, viewsets.ModelViewSet):
         owner_id = self.request.query_params.get('owner')
         if owner_id:
             qs = qs.filter(owner_id=owner_id)
-        return qs
+        return qs.order_by('-created_at', '-id')
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+
+    def check_object_permissions(self, request, obj):
+        # Allow liking feed items even if the user does not own them
+        if self.action == 'toggle_like':
+            return
+        super().check_object_permissions(request, obj)
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -565,7 +580,7 @@ class ConnectionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Connection.objects.filter(Q(from_user=user) | Q(to_user=user))
+        return Connection.objects.filter(Q(from_user=user) | Q(to_user=user)).order_by('-created_at')
 
     def perform_create(self, serializer):
         from django.db import IntegrityError
@@ -579,10 +594,17 @@ class ConnectionViewSet(viewsets.ModelViewSet):
         except IntegrityError:
             raise ValidationError({'detail': 'Connection request already sent.'})
 
+        talent = Talent.objects.filter(owner=self.request.user).first()
+        body = f'{self.request.user.email} sent you a connection request.'
+        if talent:
+            body += f'||{talent.id}'
+        else:
+            body += f'||hirer:{self.request.user.id}'
+
         Notification.objects.create(
             recipient=conn.to_user,
             type='connection_request',
-            body=f'{self.request.user.email} sent you a connection request.',
+            body=body,
         )
         
         # Handle optional GIT message
@@ -666,8 +688,8 @@ class ClipViewSet(OwnerWriteMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         talent_id = self.request.query_params.get('talent')
         if talent_id:
-            return Clip.objects.filter(talent_id=talent_id)
-        return Clip.objects.filter(talent__owner=self.request.user)
+            return Clip.objects.filter(talent_id=talent_id).order_by('-id')
+        return Clip.objects.filter(talent__owner=self.request.user).order_by('-id')
 
     def perform_create(self, serializer):
         talent = Talent.objects.filter(owner=self.request.user).first()
@@ -716,11 +738,11 @@ class FollowViewSet(viewsets.ModelViewSet):
         if talent_id:
             talent_qs = Talent.objects.filter(pk=talent_id, owner=self.request.user)
             if talent_qs.exists():
-                return Follow.objects.filter(talent_id=talent_id)
+                return Follow.objects.filter(talent_id=talent_id).order_by('-id')
             # Fan checking their own follow status for this talent
-            return Follow.objects.filter(talent_id=talent_id, fan=self.request.user)
+            return Follow.objects.filter(talent_id=talent_id, fan=self.request.user).order_by('-id')
         # Default: return the current user's own follows (fan view)
-        return Follow.objects.filter(fan=self.request.user)
+        return Follow.objects.filter(fan=self.request.user).order_by('-id')
 
     def perform_create(self, serializer):
         from rest_framework.exceptions import ValidationError
@@ -759,8 +781,8 @@ class SubscriptionTierViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         talent_id = self.request.query_params.get('talent')
         if talent_id:
-            return SubscriptionTier.objects.filter(talent_id=talent_id, is_active=True)
-        return SubscriptionTier.objects.filter(talent__owner=self.request.user)
+            return SubscriptionTier.objects.filter(talent_id=talent_id, is_active=True).order_by('-id')
+        return SubscriptionTier.objects.filter(talent__owner=self.request.user).order_by('-id')
 
     def perform_create(self, serializer):
         talent = Talent.objects.filter(owner=self.request.user).first()
@@ -1569,7 +1591,7 @@ class AuditionSlotViewSet(viewsets.ModelViewSet):
         opp_id = self.request.query_params.get('opportunity')
         if opp_id:
             qs = qs.filter(opportunity_id=opp_id)
-        return qs
+        return qs.order_by('start_time', 'id')
 
     def perform_create(self, serializer):
         opp_id = self.request.data.get('opportunity')

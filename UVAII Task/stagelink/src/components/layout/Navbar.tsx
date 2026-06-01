@@ -26,12 +26,12 @@ export function Navbar() {
     if (!currentUser) return;
 
     apiClient.get<{ id: number }[]>("/notifications/?unread=true")
-      .then(data => setUnreadCount(data.length))
+      .then(data => setUnreadCount(Array.isArray(data) ? data.length : 0))
       .catch(() => { });
-      
+
     apiClient.get<{id: string}[]>("/talents/?mine=true")
       .then(data => {
-        if (data.length > 0) setMyTalentId(data[0].id);
+        if (Array.isArray(data) && data.length > 0) setMyTalentId(data[0].id);
       })
       .catch(() => {});
   }, [pathname]);

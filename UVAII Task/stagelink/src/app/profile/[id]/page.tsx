@@ -66,7 +66,7 @@ interface Talent {
     works_local_cities?: string[];
     visa_notes?: string;
   };
-  training: Array<{ school: string; program: string; year?: string }>;
+  training: Array<{ school: string; program?: string; start_year?: string; end_year?: string; degree?: string; instructor?: string; type?: string; year?: string }>;
   awards: Array<{ name: string; project?: string; year?: string; festival?: string; award_type?: string; url?: string }>;
   equipment: string[];
   field_visibility?: Record<string, string>;
@@ -90,6 +90,7 @@ interface ArtistProfile {
   completeness_score?: number;
   headshots?: string[];
   skill_entries?: Array<{ id: number; category: string; name: string; proficiency: string }>;
+  credits?: Array<{ id?: number; title: string; role: string; year?: number; production_type?: string; collaborators?: string[]; verification?: string }>;
   representation?: { manager_name?: string; agent?: string; agency?: string; [key: string]: unknown };
 }
 
@@ -179,7 +180,7 @@ function SectionHeading({ children, editSection, isOwner }: {
 
 function Pill({ children, active, className = "" }: { children: React.ReactNode; active?: boolean; className?: string }) {
   return (
-    <span className={`as-pill ${active ? '!bg-[var(--as-accent)] !text-white !border-[var(--as-accent)]' : ''} ${className}`}>
+    <span className={`as-pill ${active ? '!bg-[var(--as-accent)] !text-[#221b00] !border-[var(--as-accent)]' : ''} ${className}`}>
       {children}
     </span>
   );
@@ -292,10 +293,13 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
   const isPerformer = !['director','editor','designer','vfx','producer','writer','screenwriter','pa','assistant'].some(k => talent.category.toLowerCase().includes(k));
   const isCrew = ['editor','designer','vfx','dp','sound'].some(k => talent.category.toLowerCase().includes(k));
 
+  const hasStats = Object.values(stats).some(val => val && String(val).trim().length > 0);
+  const hasTravel = (travel.passport_countries?.length ?? 0) > 0 || (travel.works_local_cities?.length ?? 0) > 0 || !!travel.visa_notes;
+
   return (
     <div className="space-y-10">
       {/* Physical Stats */}
-      {isPerformer && (
+      {isPerformer && hasStats && (
         <div>
           <SectionHeading editSection="physical" isOwner={isOwner}>Physical Stats</SectionHeading>
           <div className="as-surface rounded-lg p-5">
@@ -328,15 +332,6 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
           <div className="flex items-center gap-4 flex-wrap mb-3">
             <AvailBadge status={talent.availability_status || "Available"} until={talent.availability_until || "Jun – Aug 2025"} />
             <span className="text-sm as-text-secondary">Based in {talent.location}</span>
-            {canBook && (
-              <button
-                onClick={() => openBooking()}
-                className="ml-auto flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
-                style={{ background: "#ffd700", color: "#221b00" }}
-              >
-                <Briefcase className="w-4 h-4" /> Book Talent
-              </button>
-            )}
           </div>
           {availWindows.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "4px" }}>
@@ -456,9 +451,10 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
       )}
 
       {/* Training */}
-      <div>
-        <SectionHeading editSection="training" isOwner={isOwner}>Education &amp; Training</SectionHeading>
-        <div className="as-surface rounded-lg divide-y divide-[var(--as-border)]">
+      {training.length > 0 && (
+        <div>
+          <SectionHeading editSection="training" isOwner={isOwner}>Education &amp; Training</SectionHeading>
+          <div className="as-surface rounded-lg divide-y divide-[var(--as-border)]">
           {training.map((t, i) => (
             <div key={i} className="flex items-start gap-4 p-4">
               <div className="w-10 h-10 rounded-full bg-[rgba(255,215,0,0.1)] flex items-center justify-center shrink-0 mt-0.5">
@@ -466,17 +462,27 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
               </div>
               <div>
                 <h4 className="font-semibold text-sm as-text">{t.school}</h4>
-                <p className="text-xs as-text-muted">{t.program}{t.year ? ` · ${t.year}` : ''}</p>
+                {(t.program || t.degree) && (
+                  <p className="text-xs as-text-secondary">{[t.program, t.degree].filter(Boolean).join(' · ')}</p>
+                )}
+                <p className="text-xs as-text-muted">
+                  {t.start_year
+                    ? `${t.start_year}${t.end_year ? `–${t.end_year}` : '–present'}`
+                    : (t.year ?? '')}
+                  {t.instructor ? `${(t.start_year || t.year) ? ' · ' : ''}Instructor: ${t.instructor}` : ''}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
+      )}
 
       {/* Travel */}
-      <div>
-        <SectionHeading editSection="location" isOwner={isOwner}>Travel &amp; Logistics</SectionHeading>
-        <div className="as-surface rounded-lg p-5 space-y-5">
+      {hasTravel && (
+        <div>
+          <SectionHeading editSection="location" isOwner={isOwner}>Travel &amp; Logistics</SectionHeading>
+          <div className="as-surface rounded-lg p-5 space-y-5">
           {(travel.passport_countries ?? []).length > 0 && (
             <div>
               <p className="text-[10px] uppercase tracking-[0.1em] as-text-muted mb-2">Passport / Citizenship</p>
@@ -503,9 +509,10 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
           )}
         </div>
       </div>
+      )}
 
       {/* Equipment */}
-      {isCrew && (
+      {isCrew && equipment.length > 0 && (
         <div>
           <SectionHeading editSection="equipment" isOwner={isOwner}>Owned Equipment &amp; Gear</SectionHeading>
           <div className="as-surface rounded-lg divide-y divide-[var(--as-border)]">
@@ -526,7 +533,7 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
           if (!grouped[s.category]) grouped[s.category] = [];
           grouped[s.category]!.push(s);
         });
-        const labels: Record<string, string> = { language: "Languages", accent: "Accents & Dialects", instrument: "Instruments", dance_style: "Dance Styles", vocal: "Vocal", physical: "Physical Skills", driving: "Driving", specialty: "Specialties" };
+        const labels: Record<string, string> = { language: "Languages", accent: "Accents & Dialects", instrument: "Instruments", dance_style: "Dance Styles", vocal_style: "Vocal Styles", vocal: "Vocal", combat: "Stage Combat / Martial Arts", sport: "Sports & Athletics", circus: "Circus & Specialty", physical: "Physical Skills", driving: "Driving & Licenses", specialty: "Specialties" };
         return (
           <div>
             <SectionHeading editSection="disciplines" isOwner={isOwner}>Skills &amp; Abilities</SectionHeading>
@@ -534,14 +541,14 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
               {Object.entries(grouped).map(([cat, entries]) => (
                 <div key={cat}>
                   <p className="text-[10px] uppercase tracking-[0.1em] as-text-muted mb-2">{labels[cat] ?? cat}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {entries!.map(s => (
-                      <span key={s.id} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F0EDE8] border border-[var(--as-border)] text-xs as-text">
-                        {s.name}
-                        {s.proficiency && <span className="as-text-muted">· {s.proficiency}</span>}
-                      </span>
-                    ))}
-                  </div>
+                    <div className="flex flex-wrap gap-2">
+                      {entries!.map(s => (
+                        <span key={s.id} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors border border-[var(--as-border)] text-xs text-[#d0c6ab] font-medium">
+                          {s.name}
+                          {s.proficiency && <span className="opacity-50">· {s.proficiency}</span>}
+                        </span>
+                      ))}
+                    </div>
                 </div>
               ))}
             </div>
@@ -587,8 +594,11 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
 /* ═══════════════ AWARDS TAB ═════════════════════════════════════ */
 function AwardsTab({ talent, isOwner }: { talent: Talent; isOwner?: boolean }) {
   const awards = talent.awards ?? [];
-  const winners = awards.filter(a => a.award_type !== 'selection');
-  const selections = awards.filter(a => a.award_type === 'selection');
+  // Editor saves award_type as won | nominated | official_selection (older rows used
+  // "selection"). Bucket selections separately; everything else counts as a win/nomination.
+  const isSelection = (t?: string) => t === 'official_selection' || t === 'selection';
+  const winners = awards.filter(a => !isSelection(a.award_type));
+  const selections = awards.filter(a => isSelection(a.award_type));
 
   return (
     <div className="space-y-10">
@@ -717,7 +727,7 @@ function EndorsementsTab({ talentId, isOwner, currentUserId }: { talentId: strin
           </select>
           <div className="flex gap-2">
             <button onClick={submitEndorsement} disabled={submitting}
-              className="px-4 py-2 bg-[var(--as-accent)] text-white rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-60 flex items-center gap-1.5">
+              className="px-4 py-2 bg-[var(--as-accent)] text-[#221b00] rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-60 flex items-center gap-1.5">
               {submitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null} Submit
             </button>
             <button onClick={() => { setShowForm(false); setFormText(""); setError(""); }}
@@ -976,14 +986,14 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
   const [connectionStatus, setConnectionStatus] = useState<'PENDING' | 'ACCEPTED' | null>(null);
   const [connectionId, setConnectionId] = useState<number | null>(null);
   const [isIncomingConnection, setIsIncomingConnection] = useState(false);
-  const [activeTab, setActiveTab] = useState("content");
+  const [activeTab, setActiveTab] = useState("portfolio");
 
   useEffect(() => {
     const sessionUser = getUser();
     Promise.all([
-      apiClient.get<Talent>(`/talents/${id}/`),
-      apiClient.get<Application[]>(`/applications/?talent=${id}`),
-      apiClient.get<Opportunity[]>('/opportunities/').catch(() => [] as Opportunity[]),
+      apiClient.get<Talent>(`/talents/${id}/`, true),
+      apiClient.get<Application[]>(`/applications/?talent=${id}`, true),
+      apiClient.get<Opportunity[]>('/opportunities/', true).catch(() => [] as Opportunity[]),
     ])
       .then(([t, apps, allJobs]) => {
         // Visibility enforcement
@@ -1012,7 +1022,7 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
 
         // Fetch ArtistProfile if username available
         if (t.artstage_username) {
-          apiClient.get<ArtistProfile>(`/artists/${t.artstage_username}/`).then(setArtist).catch(() => {});
+          apiClient.get<ArtistProfile>(`/artists/${t.artstage_username}/`, true).then(setArtist).catch(() => {});
         }
         // Fetch Connection status
         if (sessionUser && t.owner && !isOwner) {
@@ -1118,22 +1128,34 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
 
   const isHirerProfile = talent?.owner_role === 'HIRER';
 
+  // Real credits are stored as Credit rows (exposed via /artists/{username}/ as artist.credits),
+  // not the legacy Talent.credits JSON. Prefer the real rows; fall back to the legacy field.
+  const rawCredits = (artist?.credits?.length ? artist.credits : (talent?.credits ?? [])) as Array<
+    string | { title: string; role: string; year?: number; collaborators?: string[]; verification?: string }
+  >;
+  const profileCredits = rawCredits.map((c) =>
+    typeof c === "string"
+      ? { title: c, role: "Role", year: undefined as number | undefined, collaborators: [] as string[], verification: undefined as string | undefined }
+      : { title: c.title, role: c.role, year: c.year, collaborators: c.collaborators ?? [], verification: c.verification }
+  );
+
   const hirerTabs = [
-    ...(profilePosts.length > 0 || isOwner ? [{ id: "posts", label: "Posts", icon: Tv }] : []),
-    ...(sharedPosts.length > 0 || isOwner ? [{ id: "shared", label: "Shared Posts", icon: Repeat }] : []),
-    ...(isOwner ? [{ id: "job_posts", label: "Job Posts", icon: Briefcase }] : []),
-    { id: "employees", label: "Employees", icon: Users },
+    ...(profilePosts.length > 0 ? [{ id: "posts", label: "Posts", icon: Tv }] : []),
+    ...(sharedPosts.length > 0 ? [{ id: "shared", label: "Shared Posts", icon: Repeat }] : []),
+    ...(orgJobs.length > 0 ? [{ id: "job_posts", label: "Job Posts", icon: Briefcase }] : []),
+    // Hide employees if empty. Currently no employee array, so hiding entirely.
   ];
 
   const artistTabs = [
-    ...(profilePosts.length > 0 || profileReels.length > 0 || profileLiveStreams.length > 0 || isOwner ? [{ id: "content", label: "Content", icon: Tv }] : []),
-    ...(sharedPosts.length > 0 || isOwner ? [{ id: "shared", label: "Shared Posts", icon: Repeat }] : []),
+    { id: "portfolio", label: "Portfolio", icon: ImageIcon },
+    ...(profilePosts.length > 0 || profileReels.length > 0 || profileLiveStreams.length > 0 ? [{ id: "content", label: "Content", icon: Tv }] : []),
+    ...(sharedPosts.length > 0 ? [{ id: "shared", label: "Shared Posts", icon: Repeat }] : []),
     { id: "about", label: "About", icon: BookOpen },
     ...(hasDisciplineDetails ? [{ id: "details", label: DISCIPLINE_LABELS[primaryDiscipline!] ?? "Details", icon: Sliders }] : []),
-    ...( (talent?.credits?.length ?? 0) > 0 || isOwner ? [{ id: "credits", label: "Credits", icon: Star }] : []),
-    ...( (talent?.awards?.length ?? 0) > 0 || isOwner ? [{ id: "awards", label: "Awards", icon: Trophy }] : []),
-    ...( (talent?.endorsements?.length ?? 0) > 0 || isOwner ? [{ id: "endorsements", label: "Endorsements", icon: Heart }] : []),
-    ...( isOwner ? [{ id: "jobs", label: "Jobs", icon: Briefcase }] : []),
+    ...( profileCredits.length > 0 ? [{ id: "credits", label: "Credits", icon: Star }] : []),
+    ...( (talent?.awards?.length ?? 0) > 0 ? [{ id: "awards", label: "Awards", icon: Trophy }] : []),
+    ...( (talent?.endorsements?.length ?? 0) > 0 ? [{ id: "endorsements", label: "Endorsements", icon: Heart }] : []),
+    ...( applications.length > 0 ? [{ id: "jobs", label: "Jobs", icon: Briefcase }] : []),
   ];
 
   const tabs = talent ? (isHirerProfile ? hirerTabs : artistTabs) : [];
@@ -1196,6 +1218,84 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
         </div>
 
         {/* ══════════ TAB CONTENT ══════════ */}
+        {activeTab === "portfolio" && (
+          <div className="space-y-10">
+            <div className="flex items-center justify-between">
+              <h3 className="as-display text-[22px] font-semibold as-text tracking-tight">Portfolio</h3>
+              {isOwner && (
+                <Link href="/profile/edit?section=media"
+                  className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-lg border border-[var(--as-accent)] as-accent font-medium hover:bg-[rgba(255,215,0,0.1)] transition-colors">
+                  <Pencil className="w-4 h-4" /> Edit portfolio
+                </Link>
+              )}
+            </div>
+
+            {/* Reels */}
+            {profileReels.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="font-semibold as-text flex items-center gap-2"><Film className="w-4 h-4 as-accent" /> Reels</h4>
+                  <Link href={`/profile/${talent!.id}/reels`} className="text-sm font-medium as-accent hover:underline flex items-center gap-1">View all <ChevronRight className="w-4 h-4" /></Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {profileReels.map((reel: any) => (
+                    <Link key={reel.id} href={`/profile/${talent!.id}/reels`}
+                      className="group aspect-[9/16] rounded-xl overflow-hidden relative bg-black ring-1 ring-white/10 hover:ring-[var(--as-accent)]/40 transition-all">
+                      {reel.thumbnail_url
+                        ? <img src={reel.thumbnail_url} alt={reel.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" />
+                        : <div className="w-full h-full bg-gradient-to-br from-[#2a1a08] to-[#0e0e0f]" />}
+                      <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/80 to-transparent" />
+                      <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1 text-white text-xs font-medium">
+                        <Play className="w-3 h-3 fill-white shrink-0" /><span className="truncate">{reel.title}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Headshots */}
+            {(artist?.headshots?.length ?? 0) > 0 && (
+              <div>
+                <h4 className="font-semibold as-text flex items-center gap-2 mb-4"><ImageIcon className="w-4 h-4 as-accent" /> Headshots</h4>
+                <LightboxGallery images={artist!.headshots!} />
+              </div>
+            )}
+
+            {/* Selected credits */}
+            {profileCredits.length > 0 && (
+              <div>
+                <h4 className="font-semibold as-text flex items-center gap-2 mb-4"><Star className="w-4 h-4 as-accent" /> Selected Credits</h4>
+                <div className="space-y-2">
+                  {profileCredits.slice(0, 6).map((c, i) => (
+                    <div key={i} className="as-surface p-4 rounded-lg flex items-center gap-4">
+                      <div className="w-9 h-9 rounded-full bg-[rgba(255,215,0,0.1)] flex items-center justify-center shrink-0"><FileVideo className="w-4 h-4 as-accent" /></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold as-text text-sm truncate">{c.title}</p>
+                        <p className="text-xs as-text-muted">{c.role}{c.year ? ` · ${c.year}` : ""}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {profileReels.length === 0 && (artist?.headshots?.length ?? 0) === 0 && profileCredits.length === 0 && (
+              <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl bg-black/40 border border-[#ffd700]/10">
+                <ImageIcon className="w-8 h-8 mb-3 text-[#ffd700]/40" />
+                <p className="text-sm font-medium as-text mb-1">{isOwner ? "Your portfolio is empty" : "No portfolio items yet"}</p>
+                {isOwner && (
+                  <>
+                    <p className="text-xs as-text-muted mb-4">Add reels, headshots and credits to showcase your work.</p>
+                    <Link href="/profile/edit?section=media" className="text-sm px-4 py-2 rounded-lg bg-[var(--as-accent)] text-[#221b00] font-semibold">Build your portfolio</Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === "posts" && (
           <div className="space-y-6">
             <h3 className="as-display text-[22px] font-semibold as-text tracking-tight mb-4">Organization Updates</h3>
@@ -1437,14 +1537,16 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
         {activeTab === "credits" && (
           <div>
             <SectionHeading editSection="credits" isOwner={isOwner}>Verified Credits</SectionHeading>
-            {talent!.credits?.length > 0 ? (
+            {profileCredits.length > 0 ? (
               <div className="space-y-3">
-                {talent!.credits.map((credit, i) => {
-                  const title = typeof credit === 'string' ? credit : credit.title;
-                  const role = typeof credit === 'string' ? 'Role' : credit.role;
-                  const year = typeof credit === 'string' ? '' : credit.year;
+                {profileCredits.map((credit, i) => {
+                  const title = credit.title?.replace(/â€“/g, '–').replace(/â€”/g, '—').replace(/â€™/g, "'");
+                  const role = credit.role?.replace(/â€“/g, '–').replace(/â€”/g, '—').replace(/â€™/g, "'");
+                  const year = credit.year;
                   const verification = creditVerifications.find(v => v.credit_title === title);
-                  const verStatus = verification?.status ?? 'SELF_ASSERTED';
+                  // Prefer the Credit row's own verification ('self_asserted'|'pending'|'verified');
+                  // fall back to the /credit-verifications/ record keyed by title.
+                  const verStatus = (credit.verification ? credit.verification.toUpperCase() : (verification?.status ?? 'SELF_ASSERTED'));
                   const barClass = verStatus === 'VERIFIED' ? 'as-verified-bar' : verStatus === 'PENDING' ? 'as-pending-bar' : 'as-self-asserted-bar';
                   return (
                     <div key={i} className={`as-surface p-4 rounded-lg flex items-start gap-4 ${barClass}`}>
@@ -1459,10 +1561,10 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
                           {verStatus === 'SELF_ASSERTED' && <span className="text-[10px] as-text-muted">Self-Asserted</span>}
                         </div>
                         <p className="text-xs as-text-muted">{role}{year ? ` · ${year}` : ''}</p>
-                        {typeof credit !== 'string' && credit.collaborators && credit.collaborators.length > 0 && (
+                        {credit.collaborators && credit.collaborators.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-1.5">
                             {credit.collaborators.map((c, ci) => (
-                              <span key={ci} className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F0EDE8] border border-[var(--as-border)] as-text-muted">{c}</span>
+                              <span key={ci} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 as-text-secondary">{c}</span>
                             ))}
                           </div>
                         )}
@@ -1533,6 +1635,7 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
         connectionId={connectionId}
         isIncomingConnection={isIncomingConnection}
         connecting={connecting}
+        creditsCount={profileCredits.length}
         onConnect={handleConnect}
         onAcceptConnection={handleAcceptConnection}
         onRejectConnection={handleRejectConnection}
@@ -1548,8 +1651,10 @@ export default function ProfilePage({ params }: { params: Promise<{ id: string }
   return (
     <div className="artstage">
       {/* COVER */}
-      <div className="h-48 md:h-56 w-full bg-gradient-to-br from-[#F0EDE8] via-[#E8E5DE] to-[#DDD8CE] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E")` }} />
+      <div className="h-48 md:h-56 w-full bg-[#0e0e0f] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#ffd700]/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,_rgba(255,215,0,0.05)_0%,_transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-transparent" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 -mt-24 relative z-10 pb-16">

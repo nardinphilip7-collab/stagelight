@@ -121,7 +121,7 @@ export default function SavedPage() {
 
 function EmptyCard({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div style={{ background: "#F0EDE8", border: "1px solid var(--as-border)", borderRadius: "14px", padding: "64px 24px", textAlign: "center" }}>
+    <div style={{ background: "var(--as-surface)", border: "1px dashed var(--as-border)", borderRadius: "14px", padding: "64px 24px", textAlign: "center", opacity: 0.8 }}>
       <div className="flex justify-center mb-3">{icon}</div>
       <p className="text-sm font-medium" style={{ color: "var(--as-text-muted)" }}>{label}</p>
     </div>

@@ -58,13 +58,22 @@ export default function NetworkPage() {
     return str ? str.slice(0, 2).toUpperCase() : "??";
   }
 
+  const [connectConfirm, setConnectConfirm] = useState<number | null>(null);
+
   async function handleConnect(e: React.MouseEvent, talentUser: number) {
     e.stopPropagation();
+    setConnectConfirm(talentUser);
+  }
+
+  async function confirmConnect() {
+    if (!connectConfirm) return;
     try {
-      const conn = await apiClient.post<Connection>('/connections/', { to_user: talentUser });
+      const conn = await apiClient.post<Connection>('/connections/', { to_user: connectConfirm });
       setConnections(prev => [...prev, conn]);
     } catch (err) {
       console.error(err);
+    } finally {
+      setConnectConfirm(null);
     }
   }
 
@@ -82,6 +91,25 @@ export default function NetworkPage() {
       setConnections(prev => prev.map(c => c.id === connId ? { ...c, status: 'accepted' } : c));
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  const [withdrawConfirm, setWithdrawConfirm] = useState<number | null>(null);
+
+  async function handleWithdrawConnection(e: React.MouseEvent, connId: number) {
+    e.stopPropagation();
+    setWithdrawConfirm(connId);
+  }
+
+  async function confirmWithdraw() {
+    if (!withdrawConfirm) return;
+    try {
+      await apiClient.delete(`/connections/${withdrawConfirm}/`);
+      setConnections(prev => prev.filter(c => c.id !== withdrawConfirm));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setWithdrawConfirm(null);
     }
   }
 
@@ -283,7 +311,7 @@ export default function NetworkPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-[24px]">
                 {recommendedTalents.slice(0, 4).map((talent) => (
-                  <TalentCard key={talent.id} talent={talent} initials={initials} router={router} handleConnect={handleConnect} getConnection={getConnection} handleAccept={handleAcceptConnection} currentUser={currentUser} />
+                  <TalentCard key={talent.id} talent={talent} initials={initials} router={router} handleConnect={handleConnect} handleWithdraw={handleWithdrawConnection} getConnection={getConnection} handleAccept={handleAcceptConnection} currentUser={currentUser} />
                 ))}
               </div>
             </div>
@@ -298,7 +326,7 @@ export default function NetworkPage() {
               {loading ? (
                 <p className="text-[#d0c6ab] font-outfit">Loading talent directory...</p>
               ) : filteredTalents.slice(0, visibleCount).map((talent) => (
-                <TalentCard key={talent.id} talent={talent} initials={initials} router={router} handleConnect={handleConnect} getConnection={getConnection} handleAccept={handleAcceptConnection} currentUser={currentUser} />
+                <TalentCard key={talent.id} talent={talent} initials={initials} router={router} handleConnect={handleConnect} handleWithdraw={handleWithdrawConnection} getConnection={getConnection} handleAccept={handleAcceptConnection} currentUser={currentUser} />
               ))}
             </div>
           </div>
@@ -319,23 +347,69 @@ export default function NetworkPage() {
 
         {/* Mobile BottomNavBar */}
         <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#201f20]/90 backdrop-blur-2xl border-t border-white/10 px-6 py-3 flex justify-between items-center z-50">
-          <button className="flex flex-col items-center gap-1 text-[#ffd700]">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>explore</span>
-            <span className="text-[10px] font-bold font-outfit">Discover</span>
+          <button onClick={() => router.push('/explore')} className="flex flex-col items-center gap-1 text-[#d0c6ab] hover:text-[var(--as-text)] transition-colors">
+            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>explore</span>
+            <span className="text-[10px] font-outfit">Discover</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-[#d0c6ab] hover:text-[var(--as-text)] transition-colors">
+          <button onClick={() => router.push('/opportunities')} className="flex flex-col items-center gap-1 text-[#d0c6ab] hover:text-[var(--as-text)] transition-colors">
             <span className="material-symbols-outlined">movie</span>
             <span className="text-[10px] font-outfit">Projects</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-[#d0c6ab] hover:text-[var(--as-text)] transition-colors">
-            <span className="material-symbols-outlined">group</span>
-            <span className="text-[10px] font-outfit">Network</span>
+          <button onClick={() => router.push(`/profile/${currentUser?.user_id}`)} className="flex flex-col items-center gap-1 text-[#ffd700]">
+            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
+            <span className="text-[10px] font-bold font-outfit">Profile</span>
           </button>
-          <button className="flex flex-col items-center gap-1 text-[#d0c6ab] hover:text-[var(--as-text)] transition-colors">
+          <button onClick={() => router.push('/manage-gigs')} className="flex flex-col items-center gap-1 text-[#d0c6ab] hover:text-[var(--as-text)] transition-colors">
             <span className="material-symbols-outlined">assignment_ind</span>
             <span className="text-[10px] font-outfit">Castings</span>
           </button>
         </nav>
+
+        {connectConfirm && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+            <div className="relative w-full max-w-sm bg-[#201f20]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <h3 className="font-syne text-[#fff6df] text-xl font-bold mb-2">Send Connection Request</h3>
+              <p className="text-[#d0c6ab] font-outfit text-sm mb-6">Are you sure you want to connect with this talent?</p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setConnectConfirm(null)}
+                  className="flex-1 py-2.5 rounded-full border border-white/10 text-[#d0c6ab] hover:text-[#fff6df] hover:bg-white/5 transition-all font-outfit text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={confirmConnect}
+                  className="flex-1 py-2.5 rounded-full bg-[#ffd700] text-[#705e00] hover:brightness-110 transition-all font-outfit text-sm font-semibold shadow-lg shadow-[#ffd700]/20"
+                >
+                  Connect
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {withdrawConfirm && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+            <div className="relative w-full max-w-sm bg-[#201f20]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+              <h3 className="font-syne text-[#fff6df] text-xl font-bold mb-2">Withdraw Request</h3>
+              <p className="text-[#d0c6ab] font-outfit text-sm mb-6">Are you sure you want to withdraw this connection request? This action cannot be undone.</p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setWithdrawConfirm(null)}
+                  className="flex-1 py-2.5 rounded-full border border-white/10 text-[#d0c6ab] hover:text-[#fff6df] hover:bg-white/5 transition-all font-outfit text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={confirmWithdraw}
+                  className="flex-1 py-2.5 rounded-full bg-[#e10111] text-white hover:brightness-110 transition-all font-outfit text-sm font-semibold shadow-lg shadow-[#e10111]/20"
+                >
+                  Withdraw
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </>
@@ -343,7 +417,7 @@ export default function NetworkPage() {
 }
 
 // Extracted TalentCard component for clean reuse
-function TalentCard({ talent, initials, router, handleConnect, getConnection, handleAccept, currentUser }: any) {
+function TalentCard({ talent, initials, router, handleConnect, handleWithdraw, getConnection, handleAccept, currentUser }: any) {
   const rawConn = getConnection ? getConnection(talent.owner) : null;
   const connStatus = rawConn ? String(rawConn.status).toUpperCase() : null; // 'PENDING' | 'ACCEPTED' | null
   const isIncoming = rawConn && String(rawConn.to_user) === String(currentUser?.user_id);
@@ -447,20 +521,30 @@ function TalentCard({ talent, initials, router, handleConnect, getConnection, ha
                   <span className="material-symbols-outlined">check</span>
                 </button>
               ) : null}
-              <button
-                disabled={connStatus !== null}
-                onClick={(e) => { if (!connStatus) handleConnect(e, talent.owner); }}
-                className={`w-11 flex items-center justify-center border rounded-lg transition-all ${
-                  connStatus === 'ACCEPTED' ? 'border-[#ffd700]/50 text-[#ffd700] bg-[#ffd700]/10 cursor-default' :
-                  connStatus === 'PENDING' ? 'border-[#d0c6ab]/50 text-[#d0c6ab] bg-white/5 cursor-default' :
-                  'border-white/10 text-[var(--as-text)] hover:bg-white/5 cursor-pointer'
-                }`}
-                title={connStatus === 'ACCEPTED' ? 'Connected' : connStatus === 'PENDING' ? 'Pending' : 'Connect'}
-              >
-                <span className="material-symbols-outlined">
-                  {connStatus === 'ACCEPTED' ? 'how_to_reg' : connStatus === 'PENDING' ? 'schedule' : 'person_add'}
-                </span>
-              </button>
+              {connStatus === 'PENDING' && !isIncoming ? (
+                <button
+                  onClick={(e) => handleWithdraw(e, rawConn.id)}
+                  className="w-11 flex items-center justify-center border border-[#d0c6ab]/50 text-[#d0c6ab] bg-white/5 hover:bg-white/10 rounded-lg transition-all cursor-pointer"
+                  title="Withdraw Request"
+                >
+                  <span className="material-symbols-outlined">person_remove</span>
+                </button>
+              ) : (
+                <button
+                  disabled={connStatus !== null}
+                  onClick={(e) => { if (!connStatus) handleConnect(e, talent.owner); }}
+                  className={`w-11 flex items-center justify-center border rounded-lg transition-all ${
+                    connStatus === 'ACCEPTED' ? 'border-[#ffd700]/50 text-[#ffd700] bg-[#ffd700]/10 cursor-default' :
+                    connStatus === 'PENDING' ? 'border-[#d0c6ab]/50 text-[#d0c6ab] bg-white/5 cursor-default' :
+                    'border-white/10 text-[var(--as-text)] hover:bg-white/5 cursor-pointer'
+                  }`}
+                  title={connStatus === 'ACCEPTED' ? 'Connected' : connStatus === 'PENDING' ? 'Pending' : 'Connect'}
+                >
+                  <span className="material-symbols-outlined">
+                    {connStatus === 'ACCEPTED' ? 'how_to_reg' : connStatus === 'PENDING' ? 'schedule' : 'person_add'}
+                  </span>
+                </button>
+              )}
             </div>
           )}
         </div>

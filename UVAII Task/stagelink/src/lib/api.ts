@@ -41,6 +41,21 @@ function withTimeout(signal?: AbortSignal): { signal: AbortSignal; clear: () => 
   return { signal: controller.signal, clear: () => clearTimeout(timer) };
 }
 
+// DRF returns field-level validation errors as { field: ["message", ...] } with no
+// top-level `detail`. Flatten those into a readable string so the UI can show the cause
+// instead of a generic "Request failed".
+function extractErrorMessage(error: unknown): string {
+  if (!error || typeof error !== 'object') return 'Request failed';
+  const obj = error as Record<string, unknown>;
+  if (typeof obj.detail === 'string') return obj.detail;
+  const parts: string[] = [];
+  for (const [field, value] of Object.entries(obj)) {
+    const text = Array.isArray(value) ? value.join(' ') : String(value);
+    parts.push(field === 'non_field_errors' ? text : `${field}: ${text}`);
+  }
+  return parts.length ? parts.join(' · ') : 'Request failed';
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -71,7 +86,7 @@ async function request<T>(
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: res.statusText }));
-    throw Object.assign(new Error(error.detail || 'Request failed'), { status: res.status, data: error });
+    throw Object.assign(new Error(extractErrorMessage(error)), { status: res.status, data: error });
   }
 
   // Handle 204 No Content
@@ -113,7 +128,7 @@ async function requestForm<T>(path: string, formData: FormData, retry = true): P
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: res.statusText }));
-    throw Object.assign(new Error(error.detail || 'Request failed'), { status: res.status, data: error });
+    throw Object.assign(new Error(extractErrorMessage(error)), { status: res.status, data: error });
   }
 
   if (res.status === 204) return undefined as T;

@@ -152,11 +152,10 @@ export default function PublicHirerProfilePage({ params }: { params: Promise<{ i
     <div style={{ backgroundColor: T.bg, minHeight: "100vh", color: T.text, fontFamily: T.outfit }}>
       <main className="hp-main">
         {/* Hero */}
-        <section style={{ position: "relative", height: "clamp(340px, 50vh, 414px)", width: "100%", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, #1a1a1b 0%, #131314 35%, #0e0e0f 100%)" }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(255,215,0,0.07) 0%, transparent 70%)" }} />
-          <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "220px", background: `linear-gradient(to top, ${T.bg} 0%, transparent 100%)`, zIndex: 10 }} />
+        <section style={{ position: "relative", height: "clamp(340px, 50vh, 414px)", width: "100%", overflow: "hidden", backgroundColor: "#0e0e0f" }}>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#ffd700]/10 blur-[120px] rounded-full pointer-events-none"></div>
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,_rgba(255,215,0,0.05)_0%,_transparent_50%)]"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-transparent" style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "220px", background: `linear-gradient(to top, ${T.bg} 0%, transparent 100%)`, zIndex: 10 }} />
 
           <div style={{ position: "absolute", bottom: 0, left: 0, width: "100%", padding: "0 clamp(20px, 5vw, 64px) 48px", zIndex: 20, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "32px", flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "flex-end", gap: "24px", flexWrap: "wrap" }}>
@@ -210,11 +209,22 @@ export default function PublicHirerProfilePage({ params }: { params: Promise<{ i
                   className="w-full bg-[rgba(255,255,255,0.05)] border border-white/10 rounded-xl p-4 text-[#d0c6ab] font-outfit text-[15px] focus:outline-none focus:border-[#ffd700]/50 min-h-[120px] mb-6"
                   placeholder="Tell us about your legacy..."
                 />
-              ) : (
+              ) : customBio ? (
                 <p style={{ color: T.muted, fontSize: "16px", lineHeight: "1.7", marginBottom: "24px", whiteSpace: "pre-wrap" }}>
-                  {customBio || (hirer.role === "AGENCY"
-                    ? "A premier talent agency connecting exceptional performers with world-class productions."
-                    : "A production house dedicated to bringing bold stories to life. From development through post, we create work that resonates, challenges, and endures.")}
+                  {customBio}
+                </p>
+              ) : isOwner ? (
+                <button
+                  type="button"
+                  onClick={() => setEditingBio(true)}
+                  className="hover:bg-[#ffd700]/10 transition-all"
+                  style={{ width: "100%", textAlign: "left", marginBottom: "24px", padding: "16px", borderRadius: "12px", border: "1px dashed rgba(255,215,0,0.3)", background: "rgba(255,215,0,0.04)", color: T.mutedDim, fontSize: "15px", lineHeight: "1.6", cursor: "pointer" }}
+                >
+                  + Add your legacy — tell talent about your {hirer.role === "AGENCY" ? "agency" : "production house"}, your mission, and what you are known for.
+                </button>
+              ) : (
+                <p style={{ color: T.mutedDim, fontSize: "15px", marginBottom: "24px" }}>
+                  No description added yet.
                 </p>
               )}
               

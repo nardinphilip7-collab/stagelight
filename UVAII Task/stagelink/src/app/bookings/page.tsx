@@ -51,6 +51,8 @@ export default function BookingsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   async function fetchOffers() {
     try {
       const data = await apiClient.get<BookingOffer[]>(`/bookings/?_t=${Date.now()}`);
@@ -83,9 +85,15 @@ export default function BookingsPage() {
     }
   }
 
-  // Separate offers by role
-  const receivedOffers = offers.filter(o => o.talent_name && !isHirerOrAgency);
-  const sentOffers = offers.filter(o => isHirerOrAgency || !o.talent_name);
+  // Filter and separate offers by role
+  const filteredOffers = offers.filter(o => 
+    (o.opportunity_title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (o.talent_name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (o.from_user_email || "").toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
+  const receivedOffers = filteredOffers.filter(o => o.talent_name && !isHirerOrAgency);
+  const sentOffers = filteredOffers.filter(o => isHirerOrAgency || !o.talent_name);
 
   const EmptyState = ({ type }: { type: "received" | "sent" }) => (
     <div className="relative overflow-hidden text-center py-20 px-6 rounded-3xl border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent shadow-2xl backdrop-blur-xl group">
@@ -134,6 +142,22 @@ export default function BookingsPage() {
               ? "Track and manage offers you've sent to talent. Keep your productions moving forward."
               : "Review and respond to booking offers from hirers and agencies. Secure your next big role."}
           </p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-8">
+            <div className="relative w-full max-w-md">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search offers by name, email, or role..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-[#ffd700]/50 focus:ring-1 focus:ring-[#ffd700]/50 transition-all text-sm"
+              />
+            </div>
+          </div>
         </div>
 
         {loading ? (

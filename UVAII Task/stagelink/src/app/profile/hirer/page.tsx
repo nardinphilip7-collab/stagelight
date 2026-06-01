@@ -85,6 +85,9 @@ export default function HirerProfilePage() {
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
 
+  const [editingBio, setEditingBio] = useState(false);
+  const [customBio, setCustomBio] = useState("");
+
   useEffect(() => {
     if (!currentUser) { router.push("/login"); return; }
     if (currentUser.role !== "HIRER" && currentUser.role !== "AGENCY") {
@@ -101,6 +104,8 @@ export default function HirerProfilePage() {
       setEditForm({ first_name: meData.first_name || "", last_name: meData.last_name || "" });
       setJobs(opps);
       setConnections(conns);
+      const savedBio = localStorage.getItem(`hirer_bio_${meData.id}`);
+      if (savedBio) setCustomBio(savedBio);
     }).catch(() => {}).finally(() => setLoading(false));
 
     if (currentUser.role === "AGENCY") {
@@ -209,12 +214,43 @@ export default function HirerProfilePage() {
 
             {/* Our Legacy */}
             <div className="hp-glass hp-rim" style={{ padding: "32px", borderRadius: "16px" }}>
-              <h2 style={{ fontFamily: T.syne, fontSize: "24px", fontWeight: "700", color: T.goldFixed, marginBottom: "24px" }}>Our Legacy</h2>
-              <p style={{ color: T.muted, fontSize: "16px", lineHeight: "1.7", marginBottom: "24px" }}>
-                {me?.role === "AGENCY"
-                  ? "A premier talent agency connecting exceptional performers with world-class productions. We represent artists across every discipline, from stage to screen."
-                  : "A production house dedicated to bringing bold stories to life. From development through post, we create work that resonates, challenges, and endures."}
-              </p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <h2 style={{ fontFamily: T.syne, fontSize: "24px", fontWeight: "700", color: T.goldFixed, margin: 0 }}>Our Legacy</h2>
+                <button
+                  onClick={() => {
+                    if (editingBio) {
+                      if (me) localStorage.setItem(`hirer_bio_${me.id}`, customBio);
+                      setEditingBio(false);
+                    } else {
+                      setEditingBio(true);
+                    }
+                  }}
+                  className="flex items-center gap-2 font-outfit text-[13px] font-bold text-[#ffd700] px-4 py-2 rounded-xl border border-[#ffd700]/30 bg-[#ffd700]/5 hover:bg-[#ffd700]/15 transition-all"
+                >
+                  {editingBio ? "Save" : "Edit"}
+                </button>
+              </div>
+              {editingBio ? (
+                <textarea
+                  value={customBio}
+                  onChange={(e) => setCustomBio(e.target.value)}
+                  className="w-full bg-[rgba(255,255,255,0.05)] border border-white/10 rounded-xl p-4 text-[#d0c6ab] font-outfit text-[15px] focus:outline-none focus:border-[#ffd700]/50 min-h-[120px] mb-6"
+                  placeholder="Tell us about your legacy..."
+                />
+              ) : customBio ? (
+                <p style={{ color: T.muted, fontSize: "16px", lineHeight: "1.7", marginBottom: "24px", whiteSpace: "pre-wrap" }}>
+                  {customBio}
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setEditingBio(true)}
+                  className="hover:bg-[#ffd700]/10 transition-all"
+                  style={{ width: "100%", textAlign: "left", marginBottom: "24px", padding: "16px", borderRadius: "12px", border: "1px dashed rgba(255,215,0,0.3)", background: "rgba(255,215,0,0.04)", color: T.mutedDim, fontSize: "15px", lineHeight: "1.6", cursor: "pointer" }}
+                >
+                  + Add your legacy — tell talent about your {me?.role === "AGENCY" ? "agency" : "production house"}, your mission, and what you are known for.
+                </button>
+              )}
               <div>
                 {[
                   { label: "Member Since", value: me?.date_joined ? new Date(me.date_joined).getFullYear().toString() : "—" },
@@ -390,7 +426,7 @@ export default function HirerProfilePage() {
               {[
                 { value: String(jobs.length),                   label: "Active Stages" },
                 { value: acceptedConns.length > 0 ? `${acceptedConns.length}` : "0", label: "Crew Members" },
-                { value: "4.8",                                  label: "Talent Rating" },
+                { value: String(jobs.reduce((sum, j) => sum + (j.applicants ?? 0), 0)), label: "Total Applicants" },
               ].map((stat, idx) => (
                 <div key={stat.label} style={{ display: "flex", alignItems: "center" }}>
                   {idx > 0 && <div className="hp-stat-div" />}

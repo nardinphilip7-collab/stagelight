@@ -493,8 +493,8 @@ class ArtistProfile(models.Model):
     secondary_disciplines = models.JSONField(default=list, blank=True)
     pronouns = models.CharField(max_length=40, blank=True)
     tagline = models.CharField(max_length=200, blank=True)
-    playable_age_min = models.IntegerField(default=18)
-    playable_age_max = models.IntegerField(default=35)
+    playable_age_min = models.IntegerField(default=18, null=True, blank=True)
+    playable_age_max = models.IntegerField(default=35, null=True, blank=True)
     identity_verified = models.BooleanField(default=False)
     headshots = models.JSONField(default=list, blank=True)
     cover_image = models.JSONField(null=True, blank=True)
@@ -555,12 +555,6 @@ class Credit(models.Model):
 
 
 class UnionAffiliation(models.Model):
-    STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('financial_core', 'Financial Core'),
-        ('eligible', 'Eligible'),
-    ]
     VERIFICATION_CHOICES = [
         ('self_asserted', 'Self Asserted'),
         ('pending', 'Pending'),
@@ -568,8 +562,8 @@ class UnionAffiliation(models.Model):
     ]
     talent = models.ForeignKey(Talent, on_delete=models.CASCADE, related_name='union_affiliations')
     union = models.CharField(max_length=50)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
-    joined_year = models.IntegerField()
+    status = models.CharField(max_length=50, blank=True, null=True, default='Member')
+    joined_year = models.IntegerField(null=True, blank=True)
     verification = models.CharField(max_length=20, choices=VERIFICATION_CHOICES, default='self_asserted')
 
     def __str__(self):

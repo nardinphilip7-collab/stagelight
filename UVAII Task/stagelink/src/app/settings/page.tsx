@@ -31,10 +31,6 @@ export default function SettingsPage() {
 
   const router = useRouter();
   const [meData, setMeData] = useState<{ date_joined?: string } | null>(null);
-  const [emailEditing, setEmailEditing] = useState(false);
-  const [newEmail, setNewEmail] = useState("");
-  const [emailSaving, setEmailSaving] = useState(false);
-  const [emailMessage, setEmailMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     if (!currentUser) { router.replace("/login"); return; }
@@ -109,26 +105,6 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleChangeEmail(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newEmail.trim() || !newEmail.includes('@')) {
-      setEmailMessage({ ok: false, text: "Please enter a valid email address." });
-      return;
-    }
-    setEmailSaving(true);
-    setEmailMessage(null);
-    try {
-      await apiClient.patch('/auth/me/', { email: newEmail.trim() });
-      setEmailMessage({ ok: true, text: "Email updated. Please log in again to refresh your session." });
-      setEmailEditing(false);
-      setTimeout(() => setEmailMessage(null), 6000);
-    } catch {
-      setEmailMessage({ ok: false, text: "Failed to update email. It may already be in use." });
-    } finally {
-      setEmailSaving(false);
-    }
-  }
-
   return (
     <div className="artstage" style={{ minHeight: "100vh", backgroundColor: "var(--as-bg)" }}>
       <div style={{ maxWidth: "900px", margin: "0 auto", padding: "48px 24px" }}>
@@ -175,38 +151,7 @@ export default function SettingsPage() {
                       <p style={{ fontSize: "13px", color: "var(--as-text-muted)", marginBottom: "2px" }}>Email Address</p>
                       <p style={{ fontSize: "15px", fontWeight: "500", color: "var(--as-text)", margin: 0 }}>{currentUser?.email ?? "—"}</p>
                     </div>
-                    {!emailEditing && (
-                      <button
-                        onClick={() => { setEmailEditing(true); setNewEmail(""); setEmailMessage(null); }}
-                        style={{ fontSize: "13px", color: "var(--as-accent)", background: "none", border: "none", cursor: "pointer" }}
-                      >
-                        Change
-                      </button>
-                    )}
                   </div>
-                  {emailEditing && (
-                    <form onSubmit={handleChangeEmail} style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
-                      <input
-                        type="email"
-                        value={newEmail}
-                        onChange={e => setNewEmail(e.target.value)}
-                        placeholder="New email address"
-                        required
-                        style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid var(--as-border)", fontSize: "14px", outline: "none", color: "var(--as-text)", background: "var(--as-bg)" }}
-                      />
-                      {emailMessage && (
-                        <p style={{ fontSize: "12px", color: emailMessage.ok ? "#00dbe8" : "#ffb4ab", margin: 0 }}>{emailMessage.text}</p>
-                      )}
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button type="submit" disabled={emailSaving} style={{ padding: "7px 16px", borderRadius: "8px", backgroundColor: "#ffd700", color: "#221b00", border: "none", fontSize: "13px", fontWeight: "700", cursor: "pointer", opacity: emailSaving ? 0.6 : 1 }}>
-                          {emailSaving ? "Saving..." : "Save"}
-                        </button>
-                        <button type="button" onClick={() => { setEmailEditing(false); setEmailMessage(null); }} style={{ padding: "7px 16px", borderRadius: "8px", backgroundColor: "transparent", border: "1px solid var(--as-border)", fontSize: "13px", cursor: "pointer", color: "var(--as-text-muted)" }}>
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  )}
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "12px", borderBottom: "1px solid var(--as-border)" }}>

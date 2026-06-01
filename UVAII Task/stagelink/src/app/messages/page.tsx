@@ -549,20 +549,6 @@ export default function MessagesPage() {
             )}
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-[#d0c6ab] mb-1.5 uppercase">Select Gig</label>
-                <select 
-                  value={bookingForm.opportunity}
-                  onChange={e => setBookingForm(p => ({ ...p, opportunity: e.target.value }))}
-                  className="w-full bg-[var(--as-bg)] border border-white/10 rounded-lg p-3 text-sm text-[var(--as-text)] focus:border-[#ffd700] outline-none"
-                >
-                  <option value="">-- Choose an Opportunity --</option>
-                  {myGigs.map(g => (
-                    <option key={g.id} value={g.id}>{g.title}</option>
-                  ))}
-                </select>
-              </div>
-
               <div className="flex gap-3">
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-[#d0c6ab] mb-1.5 uppercase">Amount</label>
@@ -621,7 +607,7 @@ export default function MessagesPage() {
               </div>
 
               <button 
-                disabled={!bookingForm.opportunity || !bookingForm.amount || bookingForm.submitting}
+                disabled={!bookingForm.amount || bookingForm.submitting}
                 onClick={async () => {
                   setBookingForm(p => ({ ...p, submitting: true, error: '', success: false }));
                   try {
@@ -635,7 +621,6 @@ export default function MessagesPage() {
                     // 2. Submit the booking offer using the talent ID
                     await apiClient.post('/bookings/', {
                       to_talent: targetTalentId,
-                      opportunity: bookingForm.opportunity,
                       amount: bookingForm.amount,
                       currency: bookingForm.currency,
                       message: bookingForm.message,

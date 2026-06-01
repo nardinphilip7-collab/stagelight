@@ -1,3 +1,6 @@
+import datetime
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import (
@@ -8,6 +11,35 @@ from .models import (
     PostStats, PostLike, PostSave, LiveStream, LiveChatMessage, Duet, AvailabilityWindow, Event, EventTicket, Endorsement,
     AuditionSlot, ApplicationAuditLog, CallbackRound,
 )
+
+
+# ── Shared validation helpers (defense in depth; mirror the frontend rules) ──
+YEAR_MIN = 1900
+YEAR_MAX = datetime.date.today().year + 10
+AGE_MIN = 0
+AGE_MAX = 120
+_url_validator = URLValidator(schemes=["http", "https"])
+
+
+def _is_plausible_year(value):
+    """Blank/None passes; otherwise must be a 4-digit year within bounds."""
+    if value in (None, "", []):
+        return True
+    s = str(value).strip()
+    if not s.isdigit() or len(s) != 4:
+        return False
+    return YEAR_MIN <= int(s) <= YEAR_MAX
+
+
+def _is_valid_url(value):
+    """Blank/None passes; otherwise must be a valid http(s) URL."""
+    if not value or not str(value).strip():
+        return True
+    try:
+        _url_validator(str(value).strip())
+        return True
+    except DjangoValidationError:
+        return False
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -49,8 +81,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class TalentSerializer(serializers.ModelSerializer):
-    legal_name = serializers.SerializerMethodField()
-    date_of_birth = serializers.SerializerMethodField()
+    # legal_name / date_of_birth are real writable model fields (so the owner can save them
+    # via PUT /profile/). They are masked for everyone but the owner in to_representation.
     artstage_username = serializers.SerializerMethodField()
     owner_role = serializers.CharField(source='owner.role', read_only=True)
 
@@ -58,15 +90,53 @@ class TalentSerializer(serializers.ModelSerializer):
         model = Talent
         fields = '__all__'
 
-    def get_legal_name(self, obj):
-        req = self.context.get('request')
-        return obj.legal_name if (req and req.user == obj.owner) else None
+    def validate_date_of_birth(self, value):
+        if value and value > datetime.date.today():
+            raise serializers.ValidationError("Date of birth can't be in the future.")
+        return value
 
-    def get_date_of_birth(self, obj):
+    def validate_training(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Training must be a list.")
+        for entry in value:
+            if not isinstance(entry, dict):
+                raise serializers.ValidationError("Each training entry must be an object.")
+            sy, ey = entry.get('start_year'), entry.get('end_year')
+            if not _is_plausible_year(sy) or not _is_plausible_year(ey):
+                raise serializers.ValidationError(
+                    f"Training years must be 4-digit values between {YEAR_MIN} and {YEAR_MAX}.")
+            if sy and ey and str(sy).isdigit() and str(ey).isdigit() and int(sy) > int(ey):
+                raise serializers.ValidationError("Training start year can't be after its end year.")
+        return value
+
+    def validate_awards(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Awards must be a list.")
+        for entry in value:
+            if not isinstance(entry, dict):
+                raise serializers.ValidationError("Each award must be an object.")
+            if not _is_plausible_year(entry.get('year')):
+                raise serializers.ValidationError(
+                    f"Award year must be between {YEAR_MIN} and {YEAR_MAX}.")
+            if not _is_valid_url(entry.get('url')):
+                raise serializers.ValidationError("Award link must be a valid http(s) URL.")
+        return value
+
+    def validate_press_mentions(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Press mentions must be a list.")
+        for entry in value:
+            if isinstance(entry, dict) and not _is_valid_url(entry.get('url')):
+                raise serializers.ValidationError("Press mention link must be a valid http(s) URL.")
+        return value
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
         req = self.context.get('request')
-        if req and req.user == obj.owner and obj.date_of_birth:
-            return str(obj.date_of_birth)
-        return None
+        if not (req and req.user == instance.owner):
+            data['legal_name'] = None
+            data['date_of_birth'] = None
+        return data
 
     def get_artstage_username(self, obj):
         try:
@@ -255,6 +325,12 @@ class BlockSerializer(serializers.ModelSerializer):
 # ─────────────────────────── ArtStage Serializers ────────────────────────────
 
 class SkillEntrySerializer(serializers.ModelSerializer):
+    # Accept the frontend's richer category/proficiency taxonomy. The model keeps `choices`
+    # for admin display only; overriding here bypasses the auto-generated ChoiceField so any
+    # value is accepted (Django enforces choices at the form/serializer layer, not the DB).
+    category = serializers.CharField()
+    proficiency = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = SkillEntry
         fields = ('id', 'talent', 'category', 'name', 'proficiency', 'endorsed_by')
@@ -270,6 +346,11 @@ class CreditSerializer(serializers.ModelSerializer):
             'collaborators',
         )
         read_only_fields = ('id',)
+
+    def validate_year(self, value):
+        if not _is_plausible_year(value):
+            raise serializers.ValidationError(f"Year must be between {YEAR_MIN} and {YEAR_MAX}.")
+        return value
 
 
 class EndorsementSerializer(serializers.ModelSerializer):
@@ -294,6 +375,11 @@ class UnionAffiliationSerializer(serializers.ModelSerializer):
         model = UnionAffiliation
         fields = ('id', 'talent', 'union', 'status', 'joined_year', 'verification')
         read_only_fields = ('id',)
+
+    def validate_joined_year(self, value):
+        if not _is_plausible_year(value):
+            raise serializers.ValidationError(f"Joined year must be between {YEAR_MIN} and {YEAR_MAX}.")
+        return value
 
 
 class ReelStatsSerializer(serializers.ModelSerializer):
@@ -444,6 +530,9 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     """Full artist profile: nested talent data + ArtStage profile fields + related data."""
     talent_id = serializers.CharField(source='talent.id', read_only=True)
     owner_user_id = serializers.IntegerField(source='talent.owner_id', read_only=True)
+    # Accept any discipline value the frontend sends (e.g. "writer") instead of restricting to
+    # the model's DISCIPLINE_CHOICES; bypasses the auto ChoiceField (no migration needed).
+    primary_discipline = serializers.CharField(required=False)
     stage_name = serializers.CharField(source='talent.name', read_only=True)
     location = serializers.CharField(source='talent.location', read_only=True)
     bio = serializers.CharField(source='talent.bio', read_only=True)
@@ -484,6 +573,20 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'onboarding_complete',
         )
         read_only_fields = ('id', 'onboarding_complete')
+
+    def validate(self, attrs):
+        # Fall back to the existing instance values for partial (PATCH) updates.
+        pmin = attrs.get('playable_age_min', getattr(self.instance, 'playable_age_min', None))
+        pmax = attrs.get('playable_age_max', getattr(self.instance, 'playable_age_max', None))
+        for label, val in (("minimum", pmin), ("maximum", pmax)):
+            if val is not None and not (AGE_MIN <= val <= AGE_MAX):
+                raise serializers.ValidationError(
+                    {f"playable_age_{'min' if label == 'minimum' else 'max'}":
+                     f"Playable age {label} must be between {AGE_MIN} and {AGE_MAX}."})
+        if pmin is not None and pmax is not None and pmin > pmax:
+            raise serializers.ValidationError(
+                {"playable_age_min": "Minimum playable age can't be greater than the maximum."})
+        return attrs
 
     def get_reels_count(self, obj):
         return obj.talent.artstage_reels.count()

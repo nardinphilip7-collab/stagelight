@@ -115,7 +115,7 @@ export default function ReelsPage() {
           apiClient.get<Reel[]>("/reels/"),
           apiClient.get<Talent[]>("/talents/"),
         ]);
-        if (reelsRes.status === "fulfilled" && reelsRes.value.length > 0) {
+        if (reelsRes.status === "fulfilled" && Array.isArray(reelsRes.value) && reelsRes.value.length > 0) {
           setReels(reelsRes.value);
           const initialLiked = new Set(reelsRes.value.filter(r => r.has_liked).map(r => String(r.id)));
           setLikedReels(initialLiked);
@@ -133,6 +133,21 @@ export default function ReelsPage() {
       }
     };
     fetchData();
+
+    // Poll for updates every 5 seconds
+    const interval = setInterval(async () => {
+      try {
+        const reelsRes = await apiClient.get<Reel[]>("/reels/");
+        if (Array.isArray(reelsRes)) {
+          setReels(prevReels => prevReels.map(r => {
+            const updated = reelsRes.find(ur => ur.id === r.id);
+            return updated ? { ...r, likes: updated.likes, comments: updated.comments } : r;
+          }));
+        }
+      } catch { /* ignore */ }
+    }, 5000);
+
+    return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

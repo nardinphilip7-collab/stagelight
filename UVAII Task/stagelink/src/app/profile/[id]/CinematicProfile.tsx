@@ -13,6 +13,7 @@ interface CinematicProfileProps {
   connectionId?: number | null;
   isIncomingConnection?: boolean;
   connecting?: boolean;
+  creditsCount?: number;
   onConnect?: () => void;
   onAcceptConnection?: () => void;
   onRejectConnection?: () => void;
@@ -27,11 +28,14 @@ export default function CinematicProfile({
   connectionId,
   isIncomingConnection,
   connecting,
+  creditsCount,
   onConnect,
   onAcceptConnection,
   onRejectConnection
 }: CinematicProfileProps) {
   const [endorsements, setEndorsements] = useState<any[]>([]);
+  const [showConnectConfirm, setShowConnectConfirm] = useState(false);
+  const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
 
   useEffect(() => {
     if (talent?.id) {
@@ -52,7 +56,8 @@ export default function CinematicProfile({
   const credits = Array.isArray(talent.credits) ? talent.credits : [];
   const skills = Array.isArray(talent.skills) ? talent.skills : [];
   const rating = talent.rating ? talent.rating.toFixed(1) : "—";
-  const productions = credits.length;
+  // Prefer the real credit count (Credit rows) passed from the parent; fall back to legacy JSON.
+  const productions = creditsCount ?? credits.length;
 
   const height = talent.physical_stats?.height || "—";
   const hair = talent.physical_stats?.hair_color || "—";
@@ -63,17 +68,12 @@ export default function CinematicProfile({
       
       {/* ─── SECTION 1: CINEMATIC HERO ─── */}
       <section className="relative h-[614px] md:h-[716px] flex items-end overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-[#0a0a0b]">
-          <img
-            src={coverBg}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-          {/* Horizontal fade: visible on left, fades to dark on right — same as login */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(10, 10, 11, 0) 60%, rgba(10, 10, 11, 1) 100%)' }} />
-          {/* Vertical fade: content legibility at the bottom */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-transparent" /></div>
+        <div className="absolute inset-0 z-0 bg-[#0e0e0f]">
+          {/* Same gradient found in login without the picture */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#ffd700]/10 blur-[120px] rounded-full pointer-events-none"></div>
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,_rgba(255,215,0,0.05)_0%,_transparent_50%)]"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)] via-transparent to-transparent" />
+        </div>
         
         <div className="relative z-10 w-full px-5 md:px-16 pb-12 max-w-[1440px] mx-auto flex flex-col items-start md:flex-row md:items-end gap-8">
           <div className="relative group shrink-0">
@@ -110,17 +110,19 @@ export default function CinematicProfile({
                         <X className="w-5 h-5" /> Reject
                       </button>
                     </div>
+                  ) : connectionStatus === 'PENDING' && !isIncomingConnection ? (
+                    <button onClick={() => setShowWithdrawConfirm(true)} disabled={connecting} className="px-8 py-3 bg-white/5 text-[var(--color-on-surface-variant)] border border-white/10 font-bold rounded-lg hover:bg-white/10 hover:text-white transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                      <X className="w-5 h-5" /> Withdraw Request
+                    </button>
                   ) : (
-                    <button onClick={onConnect} disabled={connecting || connectionStatus !== null || !talent.owner} className="px-8 py-3 bg-[#a80000] text-white font-bold rounded-lg border border-[#a80000] hover:bg-[#8b0000] transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button onClick={() => setShowConnectConfirm(true)} disabled={connecting || connectionStatus !== null || !talent.owner} className="px-8 py-3 bg-[#a80000] text-white font-bold rounded-lg border border-[#a80000] hover:bg-[#8b0000] transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                       {connectionStatus === 'ACCEPTED' ? <CheckCircle2 className="w-5 h-5" /> : connectionStatus === 'PENDING' ? null : <UserPlus className="w-5 h-5" />}
                       {connectionStatus === 'ACCEPTED' ? "Connected" : connectionStatus === 'PENDING' ? "Requested" : "Request Connection"}
                     </button>
                   )}
                 </>
               )}
-              <button className="px-8 py-3 bg-[rgba(22,22,24,0.7)] backdrop-blur-[20px] text-white font-bold rounded-lg border border-white/10 hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2">
-                <Share2 className="w-5 h-5" /> Share Profile
-              </button>
+
             </div>
           </div>
         </div>
@@ -235,6 +237,59 @@ export default function CinematicProfile({
           
         </div>
       </div>
+
+      {/* Confirmation Modals */}
+      {showConnectConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="relative w-full max-w-sm bg-[#201f20]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+            <h3 className="font-[var(--font-syne)] text-[#fff6df] text-xl font-bold mb-2">Send Connection Request</h3>
+            <p className="text-[#d0c6ab] font-outfit text-sm mb-6">Are you sure you want to connect with {name}?</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setShowConnectConfirm(false)}
+                className="flex-1 py-2.5 rounded-full border border-white/10 text-[#d0c6ab] hover:text-[#fff6df] hover:bg-white/5 transition-all font-outfit text-sm font-semibold"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  setShowConnectConfirm(false);
+                  if (onConnect) onConnect();
+                }}
+                className="flex-1 py-2.5 rounded-full bg-[#a80000] text-white hover:brightness-110 transition-all font-outfit text-sm font-semibold shadow-lg shadow-[#a80000]/20"
+              >
+                Connect
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showWithdrawConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="relative w-full max-w-sm bg-[#201f20]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+            <h3 className="font-[var(--font-syne)] text-[#fff6df] text-xl font-bold mb-2">Withdraw Request</h3>
+            <p className="text-[#d0c6ab] font-outfit text-sm mb-6">Are you sure you want to withdraw this connection request? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setShowWithdrawConfirm(false)}
+                className="flex-1 py-2.5 rounded-full border border-white/10 text-[#d0c6ab] hover:text-[#fff6df] hover:bg-white/5 transition-all font-outfit text-sm font-semibold"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  setShowWithdrawConfirm(false);
+                  if (onRejectConnection) onRejectConnection();
+                }}
+                className="flex-1 py-2.5 rounded-full bg-[#e10111] text-white hover:brightness-110 transition-all font-outfit text-sm font-semibold shadow-lg shadow-[#e10111]/20"
+              >
+                Withdraw
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

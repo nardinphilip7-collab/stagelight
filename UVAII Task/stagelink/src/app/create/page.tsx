@@ -367,7 +367,7 @@ export default function CreatePage() {
                         <img src={url} alt="" className="w-full h-full object-cover rounded-xl border border-[var(--as-border)]" />
                         <button
                           onClick={() => setPostImages(prev => prev.filter((_, j) => j !== i))}
-                          className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[var(--as-accent)] text-white flex items-center justify-center border-2 border-white cursor-pointer"
+                          className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[var(--as-accent)] text-[#221b00] flex items-center justify-center border-2 border-white cursor-pointer"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -564,7 +564,7 @@ export default function CreatePage() {
               <div className="flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl bg-[rgba(255,215,0,0.1)] border border-[var(--as-accent)]/40 text-sm text-[var(--as-text)] mb-6">
                 <span>You need a talent profile to create reels and go live.</span>
                 <button onClick={() => router.push("/profile/edit")}
-                  className="shrink-0 px-4 py-2 rounded-lg bg-[var(--as-accent)] text-white text-xs font-semibold cursor-pointer">
+                  className="shrink-0 px-4 py-2 rounded-lg bg-[var(--as-accent)] text-[#221b00] text-xs font-semibold cursor-pointer">
                   Set up profile
                 </button>
               </div>
@@ -670,29 +670,9 @@ export default function CreatePage() {
                   </div>
 
                   <div>
-                    <SectionHeader icon={Settings2} title="Settings" />
+                    <SectionHeader icon={Eye} title="Visibility" />
                     <div className="flex flex-col gap-6">
-                      <div className="grid grid-cols-2 gap-4 items-end">
-                        <div>
-                          <label className={labelCls}>Duration (seconds)</label>
-                          <input value={reelDuration} onChange={e => setReelDuration(e.target.value)} placeholder="e.g. 120" type="number" min={0} className={inputCls} />
-                        </div>
-                        <label className="flex items-center gap-3 cursor-pointer pb-0.5">
-                          <div
-                            onClick={() => setReelCaptions(!reelCaptions)}
-                            className={`w-10 h-5 rounded-full transition-colors relative shrink-0 cursor-pointer ${reelCaptions ? "bg-[var(--as-accent)]" : "bg-[var(--as-border)]"}`}
-                          >
-                            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-[var(--as-surface)] shadow transition-transform ${reelCaptions ? "translate-x-5" : "translate-x-0.5"}`} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-[var(--as-text)]">Has captions</p>
-                            <p className="text-[11px] text-[var(--as-text-muted)]">Accessibility enabled</p>
-                          </div>
-                        </label>
-                      </div>
-
                       <div>
-                        <label className={labelCls}>Visibility</label>
                         <div className="flex flex-col gap-2">
                           {VISIBILITY_OPTIONS.map(v => {
                             const Icon = VISIBILITY_ICONS[v.value] ?? Globe;
@@ -790,7 +770,7 @@ function SubmitButton({ label, loading, onClick }: { label: string; loading: boo
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full py-3.5 rounded-xl bg-[var(--as-accent)] text-white text-sm font-bold flex items-center justify-center gap-2 transition-opacity cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-lg"
+      className="w-full py-3.5 rounded-xl bg-[var(--as-accent)] text-[#221b00] text-sm font-bold flex items-center justify-center gap-2 transition-opacity cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-lg"
     >
       {loading && <Loader2 className="w-4 h-4 animate-spin" />}
       {label}
@@ -813,7 +793,7 @@ function LiveConfirmation({ result, onReset }: { result: LiveResult; onReset: ()
       <div className="flex flex-col gap-3 items-center">
         <button
           onClick={() => router.push(`/lives/${result.id}`)}
-          className="px-8 py-2.5 rounded-xl bg-[var(--as-accent)] text-white text-sm font-semibold cursor-pointer hover:shadow-lg transition-shadow"
+          className="px-8 py-2.5 rounded-xl bg-[var(--as-accent)] text-[#221b00] text-sm font-semibold cursor-pointer hover:shadow-lg transition-shadow"
         >
           Enter Your Stream
         </button>
