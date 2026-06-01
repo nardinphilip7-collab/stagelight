@@ -843,24 +843,32 @@ export default function FeedPage() {
                   autoFocus
                 />
               </div>
-              <div className="border border-[var(--as-border)] rounded-xl p-4 bg-[rgba(255,255,255,0.02)]">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-md overflow-hidden bg-[var(--as-border)]">
-                    {postToRepost.author_avatar ? (
-                      <img src={postToRepost.author_avatar} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-white">{postToRepost.author_name[0]}</div>
+              {(() => {
+                // If the target is itself a repost, the image/description live on the
+                // embedded original, not on the wrapper — preview that source so it
+                // matches what actually gets posted.
+                const src = postToRepost.repost_of_detail ?? postToRepost;
+                return (
+                  <div className="border border-[var(--as-border)] rounded-xl p-4 bg-[rgba(255,255,255,0.02)]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-6 h-6 rounded-md overflow-hidden bg-[var(--as-border)]">
+                        {src.author_avatar ? (
+                          <img src={src.author_avatar} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-white">{src.author_name[0]}</div>
+                        )}
+                      </div>
+                      <span className="text-xs font-semibold as-text">{src.author_name}</span>
+                    </div>
+                    {src.description && <p className="text-xs as-text line-clamp-2">{src.description}</p>}
+                    {src.attachments && src.attachments.length > 0 && (
+                      <div className="mt-2 h-24 bg-[#201f20] rounded-lg overflow-hidden">
+                        <img src={src.attachments[0].url} className="w-full h-full object-cover" alt="" />
+                      </div>
                     )}
                   </div>
-                  <span className="text-xs font-semibold as-text">{postToRepost.author_name}</span>
-                </div>
-                {postToRepost.description && <p className="text-xs as-text line-clamp-2">{postToRepost.description}</p>}
-                {postToRepost.attachments && postToRepost.attachments.length > 0 && (
-                  <div className="mt-2 h-24 bg-[#201f20] rounded-lg overflow-hidden">
-                    <img src={postToRepost.attachments[0].url} className="w-full h-full object-cover" alt="" />
-                  </div>
-                )}
-              </div>
+                );
+              })()}
             </div>
             <div className="p-4 border-t border-[var(--as-border)] flex justify-end gap-3">
               <button onClick={() => setRepostModalOpen(false)} className="as-btn-outline text-sm">Cancel</button>

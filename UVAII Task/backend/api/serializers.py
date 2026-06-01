@@ -60,7 +60,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'date_joined', 'notification_prefs')
+        fields = ('id', 'email', 'first_name', 'last_name', 'role', 'date_joined', 'notification_prefs', 'company', 'location')
         read_only_fields = ('id', 'email', 'date_joined')
 
 
@@ -215,19 +215,25 @@ class FeedItemSerializer(serializers.ModelSerializer):
         )
 
     def get_repost_of_detail(self, obj):
-        if obj.repost_of:
-            # Avoid infinite recursion by not returning repost_of_detail on the nested object
-            return {
-                'id': obj.repost_of.id,
-                'author_name': obj.repost_of.author_name,
-                'author_role': obj.repost_of.author_role,
-                'author_avatar': obj.repost_of.author_avatar,
-                'verified': obj.repost_of.verified,
-                'time': obj.repost_of.time,
-                'description': obj.repost_of.description,
-                'attachments': obj.repost_of.attachments,
-            }
-        return None
+        if not obj.repost_of:
+            return None
+        # Walk to the true original so reposting a repost keeps the original's
+        # image/description/author instead of an empty wrapper.
+        original = obj.repost_of
+        seen = {original.id}
+        while original.repost_of_id and original.repost_of and original.repost_of.id not in seen:
+            original = original.repost_of
+            seen.add(original.id)
+        return {
+            'id': original.id,
+            'author_name': original.author_name,
+            'author_role': original.author_role,
+            'author_avatar': original.author_avatar,
+            'verified': original.verified,
+            'time': original.time,
+            'description': original.description,
+            'attachments': original.attachments,
+        }
 
     def get_has_liked(self, obj):
         request = self.context.get('request')

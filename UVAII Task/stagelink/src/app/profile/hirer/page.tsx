@@ -12,6 +12,8 @@ interface MeData {
   first_name: string;
   last_name: string;
   role: string;
+  company?: string;
+  location?: string;
   date_joined: string;
 }
 
@@ -81,7 +83,7 @@ export default function HirerProfilePage() {
   const [loading, setLoading] = useState(true);
 
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editForm, setEditForm] = useState({ first_name: "", last_name: "" });
+  const [editForm, setEditForm] = useState({ first_name: "", last_name: "", company: "", location: "" });
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
 
@@ -101,7 +103,7 @@ export default function HirerProfilePage() {
       apiClient.get<Connection[]>("/connections/").catch(() => [] as Connection[]),
     ]).then(([meData, opps, conns]) => {
       setMe(meData);
-      setEditForm({ first_name: meData.first_name || "", last_name: meData.last_name || "" });
+      setEditForm({ first_name: meData.first_name || "", last_name: meData.last_name || "", company: meData.company || "", location: meData.location || "" });
       setJobs(opps);
       setConnections(conns);
       const savedBio = localStorage.getItem(`hirer_bio_${meData.id}`);
@@ -168,10 +170,13 @@ export default function HirerProfilePage() {
                 <h1 style={{ fontFamily: T.syne, fontSize: "clamp(36px, 4vw, 64px)", fontWeight: "800", color: T.goldFixed, margin: "0 0 10px", lineHeight: "1.05", letterSpacing: "-0.02em" }}>
                   {displayName}
                 </h1>
+                {me?.company && (
+                  <p style={{ fontFamily: T.outfit, fontSize: "16px", fontWeight: 600, color: T.text, margin: "0 0 8px" }}>{me.company}</p>
+                )}
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
                   <span style={{ display: "flex", alignItems: "center", gap: "4px", color: T.muted, fontSize: "14px" }}>
                     <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>location_on</span>
-                    {me?.email?.split("@")[1] ?? "Studio Location"}
+                    {me?.location || "Location not set"}
                   </span>
                   <span style={{ width: "4px", height: "4px", backgroundColor: T.outline, borderRadius: "50%", display: "inline-block" }} />
                   <span style={{ display: "flex", alignItems: "center", gap: "4px", color: T.muted, fontSize: "14px" }}>
@@ -482,6 +487,8 @@ export default function HirerProfilePage() {
               {([
                 { label: "First Name", key: "first_name" as const },
                 { label: "Last Name",  key: "last_name"  as const },
+                { label: "Company / Studio", key: "company" as const },
+                { label: "Location", key: "location" as const },
               ]).map(({ label, key }) => (
                 <div key={key}>
                   <label style={{ fontSize: "12px", fontWeight: 600, color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "6px" }}>{label}</label>

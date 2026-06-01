@@ -1,12 +1,30 @@
 import { useProfile } from "../ProfileContext";
 import { Input } from "@/components/ui/input";
-import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { Plus, X, Upload, FileText, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { sanitizeDigits, isPlausibleYear, YEAR_MIN, YEAR_MAX } from "@/lib/validation";
+import { uploadFile } from "@/lib/upload";
 
 export function TrainingSection() {
   const { training, setTraining, newTraining, setNewTraining } = useProfile();
   const [err, setErr] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const certInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleCertUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true); setErr("");
+    try {
+      const url = await uploadFile(file);
+      setNewTraining(p => ({ ...p, certificate_url: url, certificate_name: file.name }));
+    } catch {
+      setErr("Certificate upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+      if (certInputRef.current) certInputRef.current.value = "";
+    }
+  }
 
   function addEntry() {
     if (!newTraining.school.trim()) { setErr("School / institution is required."); return; }
@@ -19,7 +37,7 @@ export function TrainingSection() {
     }
     setErr("");
     setTraining(prev => [...prev, { ...newTraining }]);
-    setNewTraining({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school" });
+    setNewTraining({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school", certificate_url: "", certificate_name: "" });
   }
 
   return (
@@ -55,6 +73,13 @@ export function TrainingSection() {
                       </>
                     )}
                   </p>
+                  {t.certificate_url && (
+                    <a href={t.certificate_url} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 mt-2 text-xs font-medium text-primary hover:underline">
+                      <FileText className="w-3.5 h-3.5" />
+                      {t.certificate_name || "View certificate"}
+                    </a>
+                  )}
                 </div>
                 <button onClick={() => setTraining(prev => prev.filter((_, j) => j !== i))} 
                   className="w-8 h-8 rounded-full bg-secondary/50 flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0">
@@ -91,6 +116,30 @@ export function TrainingSection() {
               <option value="workshop">Workshop</option>
               <option value="masterclass">Masterclass</option>
             </select>
+          </div>
+
+          <div>
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Certificate (optional)</p>
+            <input ref={certInputRef} type="file" accept="image/*,application/pdf" className="hidden" onChange={handleCertUpload} />
+            {newTraining.certificate_url ? (
+              <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-background border border-border/60">
+                <FileText className="w-4 h-4 text-primary shrink-0" />
+                <a href={newTraining.certificate_url} target="_blank" rel="noopener noreferrer"
+                  className="flex-1 min-w-0 truncate text-sm font-medium text-primary hover:underline">
+                  {newTraining.certificate_name || "Certificate"}
+                </a>
+                <button type="button" onClick={() => setNewTraining(p => ({ ...p, certificate_url: "", certificate_name: "" }))}
+                  className="text-muted-foreground hover:text-destructive transition-colors shrink-0">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => certInputRef.current?.click()} disabled={uploading}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-dashed border-border/60 bg-background text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary transition-all disabled:opacity-60 w-full justify-center">
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                {uploading ? "Uploading…" : "Upload certificate (image or PDF)"}
+              </button>
+            )}
           </div>
 
           {err && <p className="text-xs text-destructive">{err}</p>}

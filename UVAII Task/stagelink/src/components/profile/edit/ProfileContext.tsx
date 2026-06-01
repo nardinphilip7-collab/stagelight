@@ -80,7 +80,7 @@ export function useProfileStateRoot() {
   const [newCredit, setNewCredit] = useState<CreditEntry>({ title: "", role: "", year: new Date().getFullYear(), collaborators: [] });
 
   // Training form (controlled)
-  const [newTraining, setNewTraining] = useState<TrainingEntry>({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school" });
+  const [newTraining, setNewTraining] = useState<TrainingEntry>({ school: "", program: "", degree: "", start_year: "", end_year: "", instructor: "", type: "school", certificate_url: "", certificate_name: "" });
 
   // Awards form (controlled)
   const [newAward, setNewAward] = useState<AwardEntry>({ name: "", festival: "", project: "", year: "", url: "", award_type: "won" });

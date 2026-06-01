@@ -66,7 +66,7 @@ interface Talent {
     works_local_cities?: string[];
     visa_notes?: string;
   };
-  training: Array<{ school: string; program?: string; start_year?: string; end_year?: string; degree?: string; instructor?: string; type?: string; year?: string }>;
+  training: Array<{ school: string; program?: string; start_year?: string; end_year?: string; degree?: string; instructor?: string; type?: string; year?: string; certificate_url?: string; certificate_name?: string }>;
   awards: Array<{ name: string; project?: string; year?: string; festival?: string; award_type?: string; url?: string }>;
   equipment: string[];
   field_visibility?: Record<string, string>;
@@ -330,8 +330,14 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
         <SectionHeading editSection="availability" isOwner={isOwner}>Availability</SectionHeading>
         <div className="as-surface rounded-lg p-5">
           <div className="flex items-center gap-4 flex-wrap mb-3">
-            <AvailBadge status={talent.availability_status || "Available"} until={talent.availability_until || "Jun – Aug 2025"} />
-            <span className="text-sm as-text-secondary">Based in {talent.location}</span>
+            {talent.availability_until ? (
+              <AvailBadge status={talent.availability_status || "Available"} until={talent.availability_until} />
+            ) : availWindows.length === 0 ? (
+              <span className="text-sm as-text-muted">
+                {isOwner ? "You haven't set your availability yet." : `${talent.name} hasn't set availability yet.`}
+              </span>
+            ) : null}
+            {talent.location && <span className="text-sm as-text-secondary">Based in {talent.location}</span>}
           </div>
           {availWindows.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "4px" }}>
@@ -471,6 +477,13 @@ function AboutTab({ talent, artist, isOwner }: { talent: Talent; artist: ArtistP
                     : (t.year ?? '')}
                   {t.instructor ? `${(t.start_year || t.year) ? ' · ' : ''}Instructor: ${t.instructor}` : ''}
                 </p>
+                {t.certificate_url && (
+                  <a href={t.certificate_url} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 mt-1.5 text-xs font-medium as-accent hover:underline">
+                    <FileText className="w-3.5 h-3.5" />
+                    {t.certificate_name || 'View certificate'}
+                  </a>
+                )}
               </div>
             </div>
           ))}

@@ -13,6 +13,10 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='ARTIST')
 
+    # Hirer/Agency org details — prefilled (read-only) into the gig form.
+    company = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=100, blank=True)
+
     notification_prefs = models.JSONField(default=dict, blank=True)
 
     USERNAME_FIELD = 'email'

@@ -155,8 +155,6 @@ export default function NewGigPage() {
       const now = new Date();
       const payload = {
         ...form,
-        company: form.company || "Cairo Film Studios",
-        location: form.location || "Cairo, Egypt",
         id: `opp-${Date.now()}`,
         posted: `${now.toLocaleString('default', { month: 'short' })} ${now.getDate()}, ${now.getFullYear()}`,
         applicants: 0,
@@ -220,8 +218,8 @@ export default function NewGigPage() {
                 <label className="block text-sm font-medium mb-1.5">Company / Studio</label>
                 <Input
                   required
-                  placeholder="Cairo Film Studios"
-                  value={form.company || "Cairo Film Studios"}
+                  placeholder="Set this on your profile"
+                  value={form.company}
                   readOnly
                   className="bg-secondary/50 cursor-not-allowed text-muted-foreground"
                 />
@@ -230,13 +228,19 @@ export default function NewGigPage() {
                 <label className="block text-sm font-medium mb-1.5">Location</label>
                 <Input
                   required
-                  placeholder="Cairo, Egypt"
-                  value={form.location || "Cairo, Egypt"}
+                  placeholder="Set this on your profile"
+                  value={form.location}
                   readOnly
                   className="bg-secondary/50 cursor-not-allowed text-muted-foreground"
                 />
               </div>
             </div>
+            {(!form.company || !form.location) && (
+              <p className="text-xs text-muted-foreground -mt-2">
+                Company and location are pulled from your profile.{" "}
+                <Link href="/profile/hirer" className="text-primary font-medium hover:underline">Update them here</Link>.
+              </p>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>

@@ -176,6 +176,49 @@ export default function PublicHirerProfilePage({ params }: { params: Promise<{ i
                 </div>
               </div>
             </div>
+
+            {!isOwner && currentUser && (
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                {connectionStatus === "ACCEPTED" ? (
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", padding: "12px 28px", borderRadius: "9999px", border: `1px solid ${T.gold}`, color: T.goldFixed, background: "rgba(255,215,0,0.08)", fontFamily: T.outfit, fontSize: "14px", fontWeight: 700 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>how_to_reg</span>
+                    Connected
+                  </span>
+                ) : connectionStatus === "PENDING" && isIncomingConnection ? (
+                  <>
+                    <button
+                      onClick={handleAcceptConnection}
+                      disabled={connecting}
+                      style={{ display: "flex", alignItems: "center", gap: "6px", padding: "12px 28px", borderRadius: "9999px", background: T.gold, color: T.onGold, border: "none", fontFamily: T.outfit, fontSize: "14px", fontWeight: 700, cursor: connecting ? "not-allowed" : "pointer", opacity: connecting ? 0.7 : 1 }}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>check</span>
+                      Accept
+                    </button>
+                    <button
+                      onClick={handleRejectConnection}
+                      disabled={connecting}
+                      style={{ display: "flex", alignItems: "center", gap: "6px", padding: "12px 28px", borderRadius: "9999px", background: "transparent", color: T.muted, border: `1px solid ${T.outline}`, fontFamily: T.outfit, fontSize: "14px", fontWeight: 600, cursor: connecting ? "not-allowed" : "pointer", opacity: connecting ? 0.7 : 1 }}
+                    >
+                      Decline
+                    </button>
+                  </>
+                ) : connectionStatus === "PENDING" ? (
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", padding: "12px 28px", borderRadius: "9999px", border: `1px solid ${T.outline}`, color: T.muted, background: "transparent", fontFamily: T.outfit, fontSize: "14px", fontWeight: 600 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>schedule</span>
+                    Request Pending
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleConnect}
+                    disabled={connecting}
+                    style={{ display: "flex", alignItems: "center", gap: "6px", padding: "12px 28px", borderRadius: "9999px", background: T.gold, color: T.onGold, border: "none", fontFamily: T.outfit, fontSize: "14px", fontWeight: 700, cursor: connecting ? "not-allowed" : "pointer", opacity: connecting ? 0.7 : 1 }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>person_add</span>
+                    Connect
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
