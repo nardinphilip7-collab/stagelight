@@ -14,6 +14,20 @@ function Label({ children, hint, lock }: { children: React.ReactNode; hint?: str
   );
 }
 
+const HAIR_COLORS = ["Black", "Brown", "Dark Brown", "Blonde", "Dark Blonde", "Red", "Auburn", "Grey", "White", "Bald", "Other"];
+const EYE_COLORS = ["Brown", "Hazel", "Green", "Blue", "Grey", "Amber", "Other"];
+const BUILDS = ["Slim", "Athletic", "Average", "Toned", "Muscular", "Curvy", "Plus-size", "Heavyset"];
+const AGE_RANGES = ["18-25", "25-35", "35-45", "45-55", "55-65", "65+"];
+
+const OPTIONS: Record<string, string[]> = {
+  hair_color: HAIR_COLORS,
+  eye_color: EYE_COLORS,
+  build: BUILDS,
+  age_range: AGE_RANGES,
+};
+
+const SELECT_CLASS = "bg-secondary/50 border border-border/60 rounded-lg px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary/30 focus:bg-background transition-all w-full";
+
 export function PhysicalSection() {
   const { physicalStats, setPhysicalStats } = useProfile();
 
@@ -40,12 +54,25 @@ export function PhysicalSection() {
           {attributes.map(([key, lbl, priv]) => (
             <div key={key}>
               <Label lock={!!priv}>{lbl}</Label>
-              <Input 
-                value={physicalStats[key] ?? ""}
-                onChange={e => setPhysicalStats(p => ({ ...p, [key]: e.target.value }))}
-                placeholder="—" 
-                className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" 
-              />
+              {OPTIONS[key] ? (
+                <select
+                  value={physicalStats[key] ?? ""}
+                  onChange={e => setPhysicalStats(p => ({ ...p, [key]: e.target.value }))}
+                  className={SELECT_CLASS}
+                >
+                  <option value="">—</option>
+                  {OPTIONS[key].map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              ) : (
+                <Input
+                  value={physicalStats[key] ?? ""}
+                  onChange={e => setPhysicalStats(p => ({ ...p, [key]: e.target.value }))}
+                  placeholder="—"
+                  className="bg-secondary/50 border-border/60 focus:bg-background transition-colors"
+                />
+              )}
             </div>
           ))}
         </div>
