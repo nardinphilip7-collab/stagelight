@@ -174,6 +174,18 @@ export default function NotificationsPage() {
                           View Profile
                         </button>
                       )}
+                      {notif.type === 'message' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const senderId = notif.body.split('||')[1];
+                            router.push(senderId ? `/messages?with=${senderId}` : '/messages');
+                          }}
+                          className="mt-3 px-4 py-1.5 bg-[#ffd700]/10 text-[#ffd700] border border-[#ffd700]/20 rounded-lg text-sm font-semibold hover:bg-[#ffd700]/20 transition-colors"
+                        >
+                          Open chat
+                        </button>
+                      )}
                     </div>
                   </li>
                 );

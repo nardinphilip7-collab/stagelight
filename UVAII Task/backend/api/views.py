@@ -565,7 +565,15 @@ class MessageViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        message = serializer.save(sender=self.request.user)
+        # Notify the recipient of the new message. The sender id after '||' lets
+        # the notifications UI deep-link into the thread (/messages?with=<id>).
+        if message.recipient_id != self.request.user.id:
+            Notification.objects.create(
+                recipient=message.recipient,
+                type='message',
+                body=f'{self.request.user.email} sent you a message.||{self.request.user.id}',
+            )
 
     @action(detail=False, methods=['get'], url_path='unread-count')
     def unread_count(self, request):
