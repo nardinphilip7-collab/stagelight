@@ -5,6 +5,10 @@ import { AGE_MIN, AGE_MAX, clampInt, todayISO } from "@/lib/validation";
 
 const BIO_MAX = 2000;
 
+const PRONOUNS = [
+  "she/her", "he/him", "they/them", "she/they", "he/they", "ze/zir", "Prefer not to say"
+];
+
 function Label({ children, hint, lock }: { children: React.ReactNode; hint?: string; lock?: boolean }) {
   return (
     <div className="mb-2">
@@ -57,7 +61,12 @@ export function IdentitySection() {
             </div>
             <div>
               <Label>Pronouns</Label>
-              <Input value={pronouns} onChange={e => setPronouns(e.target.value)} placeholder="e.g. she/her, they/them" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+              <select value={pronouns} onChange={e => setPronouns(e.target.value)} className="bg-secondary/50 border border-border/60 rounded-lg px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary/30 focus:bg-background transition-all w-full">
+                <option value="">Select pronouns</option>
+                {PRONOUNS.map(p => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
             </div>
             <div>
               <Label lock hint="Only visible to you">Date of birth</Label>
