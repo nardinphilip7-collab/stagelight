@@ -12,6 +12,8 @@ export function UnionsSection() {
     "BECTU", "WGA", "DGA", "PGA", "Musicians' Union (UK)", "AFM", "Other"
   ];
 
+  const STATUS_OPTIONS = ["Member", "Fi-Core", "Honorary", "Associate", "Eligible", "Other"];
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="mb-8">
@@ -108,7 +110,11 @@ export function UnionsSection() {
                 )}
               </div>
               
-              <Input value={newUnion.status ?? ""} onChange={e => setNewUnion(p => ({ ...p, status: e.target.value }))} placeholder="Status (e.g. Fi-Core, Member)" className="bg-background border-border/60 focus:bg-background transition-colors" />
+              <select value={newUnion.status ?? ""} onChange={e => setNewUnion(p => ({ ...p, status: e.target.value }))}
+                className="bg-background border border-border/60 rounded-lg px-3 py-2 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary/30 transition-all w-full">
+                <option value="">Status</option>
+                {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
               
               <Input inputMode="numeric" maxLength={4} value={newUnion.joined_year ?? ""} onChange={e => { const d = sanitizeDigits(e.target.value, 4); setNewUnion(p => ({ ...p, joined_year: d ? parseInt(d, 10) : undefined })); }} placeholder="Joined year" className="bg-background border-border/60 focus:bg-background transition-colors" />
             </div>
