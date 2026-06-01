@@ -512,7 +512,16 @@ function TalentCard({ talent, initials, router, handleConnect, handleWithdraw, g
           </button>
           {!isSelf && talent.owner != null && (
             <div className="flex items-center gap-2">
-              {connStatus === 'PENDING' && isIncoming ? (
+              {connStatus === 'ACCEPTED' ? (
+                <button
+                  onClick={(e) => { e.stopPropagation(); router.push(`/messages?with=${talent.owner}&name=${encodeURIComponent(talent.name || '')}`); }}
+                  className="flex items-center gap-1.5 px-4 h-11 border border-[#ffd700]/50 rounded-lg transition-all text-[#ffd700] bg-[#ffd700]/10 hover:bg-[#ffd700]/20 cursor-pointer font-outfit text-sm font-semibold"
+                  title="Message"
+                >
+                  <span className="material-symbols-outlined text-[20px]">chat</span>
+                  Message
+                </button>
+              ) : connStatus === 'PENDING' && isIncoming ? (
                 <button
                   onClick={(e) => handleAccept(e, rawConn.id)}
                   className="w-11 flex items-center justify-center border border-[#4ade80]/50 rounded-lg transition-all text-[#4ade80] bg-[#4ade80]/10 hover:bg-[#4ade80]/20 cursor-pointer"
@@ -520,8 +529,7 @@ function TalentCard({ talent, initials, router, handleConnect, handleWithdraw, g
                 >
                   <span className="material-symbols-outlined">check</span>
                 </button>
-              ) : null}
-              {connStatus === 'PENDING' && !isIncoming ? (
+              ) : connStatus === 'PENDING' && !isIncoming ? (
                 <button
                   onClick={(e) => handleWithdraw(e, rawConn.id)}
                   className="w-11 flex items-center justify-center border border-[#d0c6ab]/50 text-[#d0c6ab] bg-white/5 hover:bg-white/10 rounded-lg transition-all cursor-pointer"
@@ -531,18 +539,11 @@ function TalentCard({ talent, initials, router, handleConnect, handleWithdraw, g
                 </button>
               ) : (
                 <button
-                  disabled={connStatus !== null}
-                  onClick={(e) => { if (!connStatus) handleConnect(e, talent.owner); }}
-                  className={`w-11 flex items-center justify-center border rounded-lg transition-all ${
-                    connStatus === 'ACCEPTED' ? 'border-[#ffd700]/50 text-[#ffd700] bg-[#ffd700]/10 cursor-default' :
-                    connStatus === 'PENDING' ? 'border-[#d0c6ab]/50 text-[#d0c6ab] bg-white/5 cursor-default' :
-                    'border-white/10 text-[var(--as-text)] hover:bg-white/5 cursor-pointer'
-                  }`}
-                  title={connStatus === 'ACCEPTED' ? 'Connected' : connStatus === 'PENDING' ? 'Pending' : 'Connect'}
+                  onClick={(e) => handleConnect(e, talent.owner)}
+                  className="w-11 flex items-center justify-center border rounded-lg transition-all border-white/10 text-[var(--as-text)] hover:bg-white/5 cursor-pointer"
+                  title="Connect"
                 >
-                  <span className="material-symbols-outlined">
-                    {connStatus === 'ACCEPTED' ? 'how_to_reg' : connStatus === 'PENDING' ? 'schedule' : 'person_add'}
-                  </span>
+                  <span className="material-symbols-outlined">person_add</span>
                 </button>
               )}
             </div>

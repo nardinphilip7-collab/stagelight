@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { apiClient } from "@/lib/api";
 import { getUser } from "@/lib/auth";
 import { 
@@ -32,8 +32,9 @@ interface Conversation {
   role?: string;
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const currentUser = getUser();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -74,6 +75,12 @@ export default function MessagesPage() {
     return () => clearInterval(int1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Deep link: /messages?with=<userId> opens (or starts) a thread with that user.
+  useEffect(() => {
+    const w = searchParams.get("with");
+    if (w && !Number.isNaN(Number(w))) setActiveId(Number(w));
+  }, [searchParams]);
 
   useEffect(() => {
     if (activeId) {
@@ -212,12 +219,30 @@ export default function MessagesPage() {
     }
   };
 
-  const filteredConversations = conversations.filter(conv => 
+  // When deep-linked to a user we have no message history with yet, surface a
+  // synthetic conversation so the thread pane opens and the first message can be sent.
+  const nameParam = searchParams.get("name") || "";
+  const syntheticActive: Conversation | null =
+    activeId != null && !conversations.some(c => c.userId === activeId)
+      ? {
+          userId: activeId,
+          email: "",
+          name: nameParam || "New conversation",
+          lastMessage: "Say hello 👋",
+          lastTime: new Date().toISOString(),
+          unread: 0,
+          avatarInitials: (nameParam || "NM").slice(0, 2).toUpperCase(),
+          role: "Professional",
+        }
+      : null;
+  const allConversations = syntheticActive ? [syntheticActive, ...conversations] : conversations;
+
+  const filteredConversations = allConversations.filter(conv =>
     conv.email.toLowerCase().includes(search.toLowerCase()) ||
     conv.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const activeConv = conversations.find(c => c.userId === activeId);
+  const activeConv = allConversations.find(c => c.userId === activeId);
 
   // Group active messages by date
   const groupedMessages: { [key: string]: Message[] } = {};
@@ -643,5 +668,13 @@ export default function MessagesPage() {
       )}
 
     </div>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[calc(100vh-80px)] bg-[var(--as-bg)]" />}>
+      <MessagesContent />
+    </Suspense>
   );
 }
