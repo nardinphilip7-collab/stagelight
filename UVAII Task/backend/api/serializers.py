@@ -147,6 +147,11 @@ class TalentSerializer(serializers.ModelSerializer):
 
 class OpportunitySerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
+    # Company & location are pulled from the hirer's profile and may be unset;
+    # accept blank so a gig can still be posted before the profile is completed.
+    company = serializers.CharField(required=False, allow_blank=True)
+    company_logo = serializers.CharField(required=False, allow_blank=True)
+    location = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = Opportunity
