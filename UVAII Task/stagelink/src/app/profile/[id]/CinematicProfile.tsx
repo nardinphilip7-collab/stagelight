@@ -114,10 +114,19 @@ export default function CinematicProfile({
                     <button onClick={() => setShowWithdrawConfirm(true)} disabled={connecting} className="px-8 py-3 bg-white/5 text-[var(--color-on-surface-variant)] border border-white/10 font-bold rounded-lg hover:bg-white/10 hover:text-white transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                       <X className="w-5 h-5" /> Withdraw Request
                     </button>
+                  ) : connectionStatus === 'ACCEPTED' ? (
+                    <div className="flex gap-2">
+                      <Link href={`/messages?with=${talent.owner}&name=${encodeURIComponent(talent.name || '')}`} className="px-8 py-3 bg-[var(--color-primary-container)] text-[var(--color-on-primary-fixed)] font-bold rounded-lg hover:shadow-[0_0_20px_rgba(255,215,0,0.15)] transition-all active:scale-95 flex items-center gap-2">
+                        <Mail className="w-5 h-5" /> Message
+                      </Link>
+                      <span className="px-5 py-3 bg-[#4ade80]/15 text-[#4ade80] border border-[#4ade80]/40 font-bold rounded-lg flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5" /> Connected
+                      </span>
+                    </div>
                   ) : (
                     <button onClick={() => setShowConnectConfirm(true)} disabled={connecting || connectionStatus !== null || !talent.owner} className="px-8 py-3 bg-[#a80000] text-white font-bold rounded-lg border border-[#a80000] hover:bg-[#8b0000] transition-all active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                      {connectionStatus === 'ACCEPTED' ? <CheckCircle2 className="w-5 h-5" /> : connectionStatus === 'PENDING' ? null : <UserPlus className="w-5 h-5" />}
-                      {connectionStatus === 'ACCEPTED' ? "Connected" : connectionStatus === 'PENDING' ? "Requested" : "Request Connection"}
+                      {connectionStatus === 'PENDING' ? null : <UserPlus className="w-5 h-5" />}
+                      {connectionStatus === 'PENDING' ? "Requested" : "Request Connection"}
                     </button>
                   )}
                 </>
