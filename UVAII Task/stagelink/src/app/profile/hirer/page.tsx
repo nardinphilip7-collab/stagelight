@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiClient } from "@/lib/api";
 import { getUser } from "@/lib/auth";
+import { CountrySelect } from "@/components/ui/country-select";
 
 interface MeData {
   id: number;
@@ -488,7 +489,6 @@ export default function HirerProfilePage() {
                 { label: "First Name", key: "first_name" as const },
                 { label: "Last Name",  key: "last_name"  as const },
                 { label: "Company / Studio", key: "company" as const },
-                { label: "Location", key: "location" as const },
               ]).map(({ label, key }) => (
                 <div key={key}>
                   <label style={{ fontSize: "12px", fontWeight: 600, color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "6px" }}>{label}</label>
@@ -501,6 +501,13 @@ export default function HirerProfilePage() {
                   />
                 </div>
               ))}
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: T.mutedDim, textTransform: "uppercase", letterSpacing: "0.5px", display: "block", marginBottom: "6px" }}>Location</label>
+                <CountrySelect
+                  value={editForm.location}
+                  onChange={v => setEditForm(p => ({ ...p, location: v }))}
+                />
+              </div>
             </div>
 
             <div style={{ marginTop: "16px", padding: "12px 14px", borderRadius: "10px", background: T.surfaceHigh, fontSize: "13px", color: T.muted }}>

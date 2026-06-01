@@ -2,6 +2,7 @@
 
 import { useProfile } from "./ProfileContext";
 import { Input } from "@/components/ui/input";
+import { CountrySelect } from "@/components/ui/country-select";
 import { ReelRecorder } from "@/components/artstage/reels/ReelRecorder";
 import { DISCIPLINE_LABELS } from "@/components/profile/DisciplineForm";
 import { CheckCircle2, ChevronRight, Loader2, Upload, X } from "lucide-react";
@@ -87,9 +88,16 @@ export function SetupWizard() {
                   ))}
                 </div>
               </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Location *</label>
-                <Input value={p.location} onChange={e => p.setLocation(e.target.value)} placeholder="e.g. London, UK" className="bg-secondary border-border" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">City *</label>
+                  <Input value={p.location} onChange={e => p.setLocation(e.target.value)} placeholder="e.g. London" className="bg-secondary border-border" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Country</label>
+                  <CountrySelect value={p.travelInfo.country ?? ""}
+                    onChange={v => p.setTravelInfo((prev: any) => ({ ...prev, country: v }))} />
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">Bio *</label>

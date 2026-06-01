@@ -1,6 +1,7 @@
 import { useProfile } from "../ProfileContext";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { CountrySelect, CountryMultiSelect } from "@/components/ui/country-select";
 import { Plus, X, Lock } from "lucide-react";
 import { useState } from "react";
 
@@ -59,11 +60,18 @@ export function LocationSection() {
       </div>
 
       <div className="p-6 rounded-xl bg-card border border-border/50 shadow-sm space-y-6">
-        <div>
-          <Label>Home market *</Label>
-          <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. London, UK" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label hint="Your home city">Home market *</Label>
+            <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. London" className="bg-secondary/50 border-border/60 focus:bg-background transition-colors" />
+          </div>
+          <div>
+            <Label hint="The country you are based in">Country</Label>
+            <CountrySelect value={travelInfo.country ?? ""}
+              onChange={v => setTravelInfo((p: any) => ({ ...p, country: v }))} />
+          </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/40">
           <div>
             <Label hint="Cities where you have accommodation">Works locally in</Label>
@@ -72,10 +80,9 @@ export function LocationSection() {
               placeholder="e.g. Manchester, Birmingham" />
           </div>
           <div>
-            <Label>Passport / citizenship</Label>
-            <TagInput values={travelInfo.passport_countries ?? []}
-              onChange={v => setTravelInfo((p: any) => ({ ...p, passport_countries: v }))}
-              placeholder="e.g. UK, Egypt" />
+            <Label hint="Countries you hold a passport for">Passport / citizenship</Label>
+            <CountryMultiSelect values={travelInfo.passport_countries ?? []}
+              onChange={v => setTravelInfo((p: any) => ({ ...p, passport_countries: v }))} />
           </div>
         </div>
 
