@@ -89,6 +89,11 @@ async function request<T>(
     throw Object.assign(new Error(extractErrorMessage(error)), { status: res.status, data: error });
   }
 
+  // A successful write can change anything — drop the read cache so subsequent
+  // GETs (profile, dashboard, lists…) reflect the new state instead of stale data.
+  const method = (options.method ?? 'GET').toUpperCase();
+  if (method !== 'GET') _getCache.clear();
+
   // Handle 204 No Content
   if (res.status === 204) return undefined as T;
   return unwrapPaginated(await res.json()) as T;
@@ -130,6 +135,9 @@ async function requestForm<T>(path: string, formData: FormData, retry = true): P
     const error = await res.json().catch(() => ({ detail: res.statusText }));
     throw Object.assign(new Error(extractErrorMessage(error)), { status: res.status, data: error });
   }
+
+  // Uploads mutate state too — keep the read cache from masking the change.
+  _getCache.clear();
 
   if (res.status === 204) return undefined as T;
   return unwrapPaginated(await res.json()) as T;
