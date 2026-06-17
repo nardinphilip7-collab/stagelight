@@ -3,6 +3,7 @@ import random
 import os
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from rest_framework import viewsets, status
@@ -12,7 +13,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.exceptions import InvalidToken
 from django.db.models import Q, F, Case, When, Value, IntegerField, Sum
 
 from .models import (
@@ -84,6 +86,14 @@ class RegisterView(APIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except ObjectDoesNotExist:
+            raise InvalidToken("User no longer exists.")
 
 
 class MeView(APIView):
@@ -460,7 +470,7 @@ class FeedItemViewSet(OwnerWriteMixin, viewsets.ModelViewSet):
             id=str(uuid.uuid4())[:20],
             author_name=talent.name if talent else user.email.split('@')[0],
             author_role=talent.category if talent else user.role,
-            author_avatar=talent.avatar if talent else '',
+            author_avatar=(talent.avatar or '') if talent else '',
             category=talent.category if talent else 'General',
             verified=talent.verified if talent else False,
             time='Just now',
@@ -515,7 +525,7 @@ class FeedItemCommentViewSet(viewsets.ModelViewSet):
         user = self.request.user
         talent = Talent.objects.filter(owner=user).first()
         author_name = talent.name if talent else user.email.split('@')[0]
-        author_avatar = talent.avatar if talent else ''
+        author_avatar = (talent.avatar or '') if talent else ''
         comment = serializer.save(
             user=user,
             author_name=author_name,

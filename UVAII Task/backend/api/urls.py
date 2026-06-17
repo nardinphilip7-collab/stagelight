@@ -1,11 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
     TalentViewSet, OpportunityViewSet, ApplicationViewSet, FeedItemViewSet, FeedItemCommentViewSet,
     MessageViewSet, ConnectionViewSet, NotificationViewSet, ClipViewSet,
-    RegisterView, LoginView, MeView, DashboardView, VerificationView,
+    RegisterView, LoginView, CustomTokenRefreshView, MeView, DashboardView, VerificationView,
     ProfileView, ChangePasswordView, NotificationPrefsView, CreditVerificationViewSet, BookingOfferViewSet,
     FollowViewSet, SubscriptionTierViewSet, ReportViewSet, BlockViewSet,
     ArtistProfileDetailView, ArtistReelsView, ArtistPostsView, ArtistAvailabilityView,
@@ -45,7 +44,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/register/', RegisterView.as_view(), name='register'),
     path('auth/login/', LoginView.as_view(), name='login'),
-    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('auth/me/', MeView.as_view(), name='me'),
     path('auth/change-password/', ChangePasswordView.as_view(), name='change_password'),
     path('auth/notification-prefs/', NotificationPrefsView.as_view(), name='notification-prefs'),
